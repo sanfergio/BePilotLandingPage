@@ -1,0 +1,139 @@
+.pricing {
+    padding: 5rem 0;
+    background-color: #F9FAFF;
+    /* Um tom muito leve de azul */
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    text-align: center;
+}
+
+.title {
+    color: var(--color-blue-dark);
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.cardsWrapper {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+    /* Para alinhar o card maior no centro */
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 300px;
+    text-align: left;
+    border: 1px solid #eee;
+    position: relative;
+}
+
+.highlight {
+    border: 2px solid var(--color-blue-medium);
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(139, 149, 225, 0.3);
+}
+
+.badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: var(--color-blue-medium);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.card h3 {
+    color: var(--color-blue-deep);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-black);
+    margin-bottom: 1.5rem;
+}
+
+.price span {
+    font-size: 1rem;
+    color: #888;
+    font-weight: 400;
+}
+
+.featuresList {
+    list-style: none;
+    margin-bottom: 2rem;
+}
+
+.featuresList li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.8rem;
+    color: #555;
+}
+
+.featuresList li svg {
+    color: var(--color-blue-medium);
+}
+
+.btnOutline {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--color-blue-medium);
+    color: var(--color-blue-medium);
+    background: white;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btnOutline:hover {
+    background: #F0F2FF;
+}
+
+.btnSolid {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--color-blue-medium);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btnSolid:hover {
+    background: var(--color-blue-deep);
+}
+
+/* Adicione ao final do seu Pricing.module.css existente */
+
+.iconWrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--color-lilac-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+    color: var(--color-blue-dark);
+}
+
+.card h3 {
+    text-align: center;
+    color: var(--color-blue-deep);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}

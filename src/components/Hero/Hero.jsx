@@ -1,0 +1,34 @@
+import React from 'react';
+import styles from './Hero.module.css';
+import heroImage from '../../assets/noScreen-nameLogo-withSlogan.png';
+
+const Hero = () => {
+    return (
+        <section className={styles.hero}>
+            <div className={styles.container}>
+                <div className={styles.content}>
+                    <h1 className={styles.title}>
+                        Conecte-se <br/> com <span className={styles.highlight}> instrutores qualificados</span>
+                    </h1>
+                    <p className={styles.description}>
+                        A BePilot conecta alunos a instrutores certificados pelo Detran de autoescola ou autônomos para cumprir horas obrigatórias, 
+                        perder o medo de dirigir (mesmo para quem já tem CNH) ou simplesmente ganhar mais prática. 
+                    </p>
+                    <div className={styles.buttonGroup}>
+                        <button className={styles.btnPrimary}>Quero ser aluno</button>
+                        <button className={styles.btnSecondary}>Quero ser instrutor</button>
+                    </div>
+                    <div className={styles.ctaNote}>
+                        <span>CFC autorizado? </span>
+                        <a href="#cfc" className={styles.ctaLink}>Cadastre sua autoescola</a>
+                    </div>
+                </div>
+                <div className={styles.imageWrapper}>
+                    <img src={heroImage} alt="Dashboard BePilot - Plataforma de Aulas de Direção" className={styles.heroImg} />
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default Hero;
