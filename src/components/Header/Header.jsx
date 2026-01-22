@@ -9,15 +9,16 @@ const Header = () => {
     return (
         <header className={styles.header}>
             <div className={styles.container}>
-                <div className={styles.logoContainer}>
-                    <img src={logo} alt="BePilot Logo" className={styles.logo} />
-                </div>
-
+                <a href="./">
+                    <div className={styles.logoContainer}>
+                        <img src={logo} alt="BePilot Logo" className={styles.logo} />
+                    </div>
+                </a>
                 {/* Menu Desktop */}
                 <nav className={`${styles.nav} ${isOpen ? styles.open : ''}`}>
-                    <a href="#recursos">Recursos</a>
+                    <a href="#recursos">Como funciona?</a>
                     <a href="#sobre">Sobre</a>
-                    <a href="#precos">Preços</a>
+                    <a href="#precos">Planos</a>
                     <a href="#contato">Contato</a>
 
                     <div className={styles.authButtonsMobile}>

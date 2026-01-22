@@ -11,7 +11,7 @@ const Hero = () => {
                         Conecte-se <br/> com <span className={styles.highlight}> instrutores qualificados</span>
                     </h1>
                     <p className={styles.description}>
-                        A BePilot conecta alunos a instrutores certificados pelo Detran de autoescola ou autônomos para cumprir horas obrigatórias, 
+                        A BePilot conecta alunos a instrutores autônomos certificados pelo Detran para cumprir horas obrigatórias, 
                         perder o medo de dirigir (mesmo para quem já tem CNH) ou simplesmente ganhar mais prática. 
                     </p>
                     <div className={styles.buttonGroup}>
@@ -24,7 +24,7 @@ const Hero = () => {
                     </div>
                 </div>
                 <div className={styles.imageWrapper}>
-                    <img src={heroImage} alt="Dashboard BePilot - Plataforma de Aulas de Direção" className={styles.heroImg} />
+                    <img src="https://img.freepik.com/fotos-gratis/instrutor-de-conducao-a-mostrar-o-painel-e-os-botoes-do-veiculo-ao-estudante-que-recebe-aulas-de-conducao_342744-691.jpg" alt="Dashboard BePilot - Plataforma de Aulas de Direção" className={styles.heroImg} />
                 </div>
             </div>
         </section>
