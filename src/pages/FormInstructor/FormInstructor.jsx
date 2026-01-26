@@ -21,7 +21,9 @@ const BePilotAmbassador = () => {
         house_number: '',
         complement: '',
         city: '',
-        uff_state: ''
+        uff_state: '',
+        questions_suggestion: '',
+        group: 0 // Inicializado como 0 (inteiro)
     });
 
     const [loading, setLoading] = useState(false);
@@ -125,23 +127,30 @@ const BePilotAmbassador = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
         let formattedValue = value;
 
-        // Formatação dos campos
-        if (name === 'cpf') formattedValue = formatCPF(value);
-        if (name === 'cep') formattedValue = formatCEP(value);
-        if (name === 'phone') formattedValue = formatPhone(value);
-        if (name === 'uff_state') formattedValue = value.toUpperCase();
+        // Lógica específica para checkbox (0 ou 1)
+        if (type === 'checkbox') {
+            formattedValue = checked ? 1 : 0;
+        } else {
+            // Formatação dos campos de texto
+            if (name === 'cpf') formattedValue = formatCPF(value);
+            if (name === 'cep') formattedValue = formatCEP(value);
+            if (name === 'phone') formattedValue = formatPhone(value);
+            if (name === 'uff_state') formattedValue = value.toUpperCase();
+        }
 
         setFormData(prev => ({ ...prev, [name]: formattedValue }));
 
-        // Validação em tempo real
-        const error = validateField(name, formattedValue);
-        setErrors(prev => ({
-            ...prev,
-            [name]: error
-        }));
+        // Validação em tempo real (apenas para campos que não são checkbox)
+        if (type !== 'checkbox') {
+            const error = validateField(name, formattedValue);
+            setErrors(prev => ({
+                ...prev,
+                [name]: error
+            }));
+        }
 
         // Busca automática do CEP quando estiver completo
         if (name === 'cep') {
@@ -360,7 +369,7 @@ const BePilotAmbassador = () => {
             setFormData({
                 name: '', email: '', cpf: '', birth_day: '', phone: '',
                 cep: '', address: '', neighborhood: '', house_number: '', complement: '',
-                city: '', uff_state: ''
+                city: '', uff_state: '', questions_suggestion: '', group: 0
             });
             setErrors({});
 
@@ -432,8 +441,11 @@ const BePilotAmbassador = () => {
                     {submitStatus === 'success' ? (
                         <div className={styles.successMessage}>
                             <h3>🎉 Cadastro Realizado!</h3>
-                            <p>Bem-vindo ao time de Embaixadores BePilot. Entraremos em contato em breve.</p>
-                            <button onClick={() => setSubmitStatus(null)} className={styles.resetButton}>Novo cadastro</button>
+                            <p>Entraremos em contato em breve.</p>
+                            <br />
+                            <br />
+                            <p>Faça parte do nosso grupo do whatsapp e fique por dentro de tudo que acontece no nosso App</p>
+                            <a href="https://chat.whatsapp.com/L9BQqgWC4j07MBrNbEd7Ll" target="_blank" rel="noopener noreferrer" className={styles.ctaButton}>Entrar no Grupo</a>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className={styles.form} noValidate>
@@ -635,11 +647,39 @@ const BePilotAmbassador = () => {
                                 </div>
                             </div>
 
+                            <div className={styles.row}>
+                                <div className={styles.inputGroup}>
+                                    <label>Dúvida ou sugestão? *</label>
+                                    <input
+                                        type="text"
+                                        name="questions_suggestion"
+                                        value={formData.questions_suggestion}
+                                        onChange={handleChange}
+                                        placeholder="Ex. Como vai funcionar? Gostaria de sugerir..."
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className={styles.row}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', width: '100%', gap: '10px' }}>
+                                    <input
+                                        type="checkbox"
+                                        name="group"
+                                        checked={formData.group === 1} // Verifica se é igual a 1
+                                        onChange={handleChange} // Handler adicionado
+                                    />
+                                    <label className={styles.inputGroup}>Deseja participar do grupo do whatsapp  para novas atualizações? </label>
+
+                                </div>
+                            </div>
+
                             {submitStatus === 'error' && (
                                 <div className={styles.errorMessage}>
                                     <p>Erro ao enviar. Verifique seus dados ou tente mais tarde.</p>
                                 </div>
                             )}
+
 
                             <button
                                 type="submit"
