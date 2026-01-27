@@ -14,13 +14,13 @@ const Hero = () => {
                         A BePilot conecta alunos a instrutores autônomos certificados pelo Detran para cumprir horas obrigatórias, 
                         perder o medo de dirigir (mesmo para quem já tem CNH) ou simplesmente ganhar mais prática. 
                     </p>
-                    <div className={styles.buttonGroup}>
-                        <button className={styles.btnPrimary}>Quero ser aluno</button>
-                        <button className={styles.btnSecondary}>Quero ser instrutor</button>
+                    <div className={styles.buttonGroup}>   
+                        <a className={styles.btnPrimary} href="/seja-aluno">Quero ser aluno</a>
+                        <a className={styles.btnSecondary} href="/seja-instrutor">Quero ser instrutor</a>
                     </div>
                     <div className={styles.ctaNote}>
                         <span>CFC autorizado? </span>
-                        <a href="#cfc" className={styles.ctaLink}>Cadastre sua autoescola</a>
+                        <a href="/seja-cfc" className={styles.ctaLink}>Cadastre sua autoescola</a>
                     </div>
                 </div>
                 <div className={styles.imageWrapper}>

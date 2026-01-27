@@ -23,7 +23,7 @@ const Pricing = () => {
                             <li><Check size={16} /> Simulados teóricos</li>
                             <li><Check size={16} /> Avaliações de instrutores</li>
                         </ul>
-                        <button className={styles.btnOutline}>Começar como Aluno</button>
+                        <a href="seja-aluno" className={styles.btnOutline}>Começar como Aluno</a>
                     </div>
 
                     {/* Plano Instrutor (Destaque) */}
@@ -41,7 +41,7 @@ const Pricing = () => {
                             <li><Check size={16} /> Relatórios de desempenho</li>
                             <li><Check size={16} /> Suporte prioritário</li>
                         </ul>
-                        <button className={styles.btnSolid}>Começar como Instrutor</button>
+                        <a href="seja-instrutor" className={styles.btnSolid}>Começar como Instrutor</a>
                     </div>
 
                     {/* Plano CFC */}
@@ -58,7 +58,7 @@ const Pricing = () => {
                             <li><Check size={16} /> Relatórios financeiros</li>
                             <li><Check size={16} /> Gerente de conta dedicado</li>
                         </ul>
-                        <button className={styles.btnOutline}>Cadastrar CFC</button>
+                        <a href="seja-cfc" className={styles.btnOutline}>Cadastrar CFC</a>
                     </div>
 
                 </div>

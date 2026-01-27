@@ -1,21 +1,22 @@
 import React from 'react';
-import Header from './components/Header/Header';
-import Hero from './components/Hero/Hero';
-import Features from './components/Features/Features';
-import Pricing from './components/Pricing/Pricing';
-import Footer from './components/Footer/Footer';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import Home from './pages/Home/Home';
+import NotFound from './pages/NotFound/NotFound';
+import BePilotAmbassador from './pages/FormInstructor/FormInstructor.jsx';
+import BePilotStudent from './pages/FormStudent/FormStudent.jsx';
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <main>
-        <Hero />
-        <Features />
-        <Pricing />
-      </main>
-      <Footer />
+    <div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="*" element={<NotFound />} />
+
+        <Route path="/seja-instrutor" element={<BePilotAmbassador />} />
+        <Route path="/seja-aluno" element={<BePilotStudent />} />
+
+      </Routes>
     </div>
   );
 }
