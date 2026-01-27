@@ -444,7 +444,7 @@ const BePilotAmbassador = () => {
                             <p>Entraremos em contato em breve.</p>
                             <br />
                             <br />
-                            <p>Faça parte do nosso grupo do whatsapp e fique por dentro de tudo que acontece no nosso App</p>
+                            <p>Faça parte do nosso grupo do whatsapp e fique por dentro de tudo que acontece no nosso App!</p>
                             <a href="https://chat.whatsapp.com/L9BQqgWC4j07MBrNbEd7Ll" target="_blank" rel="noopener noreferrer" className={styles.ctaButton}>Entrar no Grupo</a>
                         </div>
                     ) : (
