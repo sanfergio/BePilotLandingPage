@@ -50,7 +50,7 @@ const Pricing = () => {
                             <School size={32} />
                         </div>
                         <h3>Autoescola</h3>
-                        <div className={styles.price}>R$ 59,90<span>/mês</span></div>
+                        <div className={styles.price}>Grátis<span>/cadastro</span></div>
                         <ul className={styles.featuresList}>
                             <li><Check size={16} /> Gestão completa de instrutores</li>
                             <li><Check size={16} /> Dashboard administrativo</li>

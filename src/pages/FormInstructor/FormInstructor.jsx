@@ -22,7 +22,7 @@ const BePilotAmbassador = () => {
         house_number: '',
         complement: '',
         city: '',
-        uff_state: '',
+        uf_state: '',
         questions_suggestion: '',
         group: 0
     });
@@ -78,7 +78,7 @@ const BePilotAmbassador = () => {
             case 'house_number':
                 if (!value.trim()) error = "Número é obrigatório";
                 break;
-            case 'uff_state':
+            case 'uf_state':
                 if (value && value.length !== 2) error = "UF inválida";
                 else if (!value.trim()) error = "UF obrigatória";
                 break;
@@ -106,7 +106,7 @@ const BePilotAmbassador = () => {
             if (name === 'cpf') formattedValue = formatCPF(value);
             if (name === 'cep') formattedValue = formatCEP(value);
             if (name === 'phone') formattedValue = formatPhone(value);
-            if (name === 'uff_state') formattedValue = value.toUpperCase();
+            if (name === 'uf_state') formattedValue = value.toUpperCase();
         }
 
         setFormData(prev => ({ ...prev, [name]: formattedValue }));
@@ -144,13 +144,13 @@ const BePilotAmbassador = () => {
                         address: data.logradouro || '',
                         neighborhood: data.bairro || '',
                         city: data.localidade || '',
-                        uff_state: data.uf || '',
+                        uf_state: data.uf || '',
                     }));
 
                     // Limpa erros relacionados ao endereço
                     setErrors(prev => {
                         const newErrs = { ...prev };
-                        ['cep', 'address', 'neighborhood', 'city', 'uff_state'].forEach(k => delete newErrs[k]);
+                        ['cep', 'address', 'neighborhood', 'city', 'uf_state'].forEach(k => delete newErrs[k]);
                         return newErrs;
                     });
                 } else {
@@ -174,7 +174,7 @@ const BePilotAmbassador = () => {
     const validateForm = () => {
         const newErrors = {};
         // Lista de campos obrigatórios para verificar
-        const fields = ['name', 'email', 'cpf', 'birth_day', 'phone', 'cep', 'address', 'neighborhood', 'house_number', 'city', 'uff_state'];
+        const fields = ['name', 'email', 'cpf', 'birth_day', 'phone', 'cep', 'address', 'neighborhood', 'house_number', 'city', 'uf_state'];
 
         fields.forEach(field => {
             const error = validateField(field, formData[field]);
@@ -223,10 +223,10 @@ const BePilotAmbassador = () => {
             setFormData({
                 name: '', email: '', cpf: '', birth_day: '', phone: '',
                 cep: '', address: '', neighborhood: '', house_number: '', complement: '',
-                city: '', uff_state: '', questions_suggestion: '', group: 0
+                city: '', uf_state: '', questions_suggestion: '', group: 0
             });
             setErrors({});
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
 
         } catch (error) {
             console.error('Erro:', error);
@@ -438,10 +438,10 @@ const BePilotAmbassador = () => {
                                     />
                                     <InputField
                                         label="UF"
-                                        name="uff_state"
-                                        value={formData.uff_state}
+                                        name="uf_state"
+                                        value={formData.uf_state}
                                         readOnly
-                                        error={errors.uff_state}
+                                        error={errors.uf_state}
                                         className={styles.readOnly}
                                         maxLength={2}
                                     />
