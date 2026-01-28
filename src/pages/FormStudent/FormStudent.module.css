@@ -223,9 +223,9 @@
 .stepsIndicator {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-    gap: 1rem;
+    justify-content: space-around;
+    margin-bottom: 10px;
+
 }
 
 .step {
@@ -323,11 +323,6 @@
     margin-bottom: 2rem;
 }
 
-@media (max-width: 1150px) {
-    .inputGrid {
-        grid-template-columns: 1fr;
-    }
-}
 
 .inputGroup {
     display: flex;
@@ -615,12 +610,6 @@
     gap: 2rem;
 }
 
-@media (max-width: 1150px) {
-    .faqGrid {
-        grid-template-columns: 1fr;
-    }
-}
-
 .faqItem {
     background: var(--color-white);
     padding: 2rem;
@@ -662,6 +651,36 @@
 
 /* --- Responsividade --- */
 @media (max-width: 1150px) {
+
+    .faqGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .inputGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .formContainer {
+        box-shadow: none;
+        border: none;
+        width: 95%;
+    }
+
+    .formSection {
+        display: flex;
+        width: 100%;
+        padding: 0;
+    }
+
+    .stepLine {
+        display: none;
+    }
+
+    .stepsIndicator {
+        gap: 1.5rem;
+        margin-bottom: 10px;
+    }
+
     .heroContent {
         grid-template-columns: 1fr;
         gap: 2rem;

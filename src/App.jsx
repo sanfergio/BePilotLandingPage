@@ -6,6 +6,9 @@ import NotFound from './pages/NotFound/NotFound';
 import BePilotAmbassador from './pages/FormInstructor/FormInstructor.jsx';
 import BePilotStudent from './pages/FormStudent/FormStudent.jsx';
 import BePilotCFC from './pages/FormCFC/FormCFC.jsx';
+import Plans from './pages/Plans/Plans.jsx';
+import About from './pages/About/About.jsx';
+import HowWork from './pages/HowWork/HowWork.jsx';
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
         <Route path="/seja-instrutor" element={<BePilotAmbassador />} />
         <Route path="/seja-aluno" element={<BePilotStudent />} />
         <Route path="/seja-cfc" element={<BePilotCFC />} />
+        <Route path="/planos" element={<Plans />} />
+        <Route path="/sobre" element={<About />} />
+        <Route path="/como-funciona" element={<HowWork />} />
 
       </Routes>
     </div>

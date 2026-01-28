@@ -1,0 +1,585 @@
+/* Herança de Variáveis */
+.pageWrapper {
+    --color-white: #FFFFFF;
+    --color-lilac-light: #A8B0FF;
+    --color-blue-medium: #8B95E1;
+    --color-blue-purple: #6D7AC4;
+    --color-blue-deep: #505FA6;
+    --color-blue-dark: #324488;
+    --color-black: #000000;
+
+    --bg-color: #F8F9FD;
+    --max-width: 1200px;
+    --radius-lg: 16px;
+    --radius-md: 8px;
+    --transition: all 0.3s ease;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-white);
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+/* ================= HERO SECTION ================= */
+.heroSection {
+    background-color: #F4F6FF;
+    /* Fundo suave */
+    padding: 5rem 0 8rem;
+    /* Padding bottom extra para dar espaço ao conteúdo abaixo */
+    text-align: center;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+.heroHeader {
+    max-width: 700px;
+    margin: 0 auto 3rem;
+}
+
+.heroTitle {
+    font-size: 3rem;
+    color: var(--color-blue-dark);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.highlightText {
+    color: var(--color-blue-deep);
+    position: relative;
+    white-space: nowrap;
+}
+
+.highlightText::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background-color: var(--color-lilac-light);
+    opacity: 0.4;
+    z-index: -1;
+    border-radius: 4px;
+}
+
+.heroSubtitle {
+    font-size: 1.125rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* ================= TOGGLE SWITCH ================= */
+.toggleContainer {
+    background: var(--color-white);
+    display: inline-flex;
+    padding: 6px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 10;
+}
+
+.toggleBtn {
+    padding: 12px 32px;
+    border-radius: 40px;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #666;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.toggleBtn.active {
+    background-color: var(--color-blue-deep);
+    color: var(--color-white);
+    box-shadow: 0 4px 12px rgba(80, 95, 166, 0.3);
+}
+
+.toggleBtn:hover:not(.active) {
+    color: var(--color-blue-deep);
+}
+
+/* ================= STEPS SECTION ================= */
+.stepsSection {
+    margin-top: -4rem;
+    /* Sobe para sobrepor o Hero levemente */
+    padding-bottom: 6rem;
+    position: relative;
+    z-index: 20;
+}
+
+.stepsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.stepCard {
+    background: var(--color-white);
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    border: 1px solid #EFF1F8;
+    position: relative;
+    text-align: center;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stepCard:hover {
+    transform: translateY(-10px);
+    border-color: var(--color-lilac-light);
+    box-shadow: 0 15px 40px rgba(139, 149, 225, 0.15);
+}
+
+.stepNumber {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #F5F7FF;
+    z-index: 0;
+    line-height: 1;
+}
+
+.iconWrapper {
+    width: 70px;
+    height: 70px;
+    background-color: #F0F2FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-blue-deep);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.stepTitle {
+    font-size: 1.125rem;
+    color: var(--color-blue-dark);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.stepDescription {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+}
+
+/* Conector Visual (Seta entre cards) */
+.connectorLine {
+    display: none;
+    /* Escondido por padrão, lógica complexa para CSS puro, simplificado visualmente */
+}
+
+/* ================= APP FEATURE SECTION ================= */
+.appFeatureSection {
+    padding: 6rem 0;
+    background-color: transparent;
+}
+
+.featureLayout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+}
+
+.miniTag {
+    background-color: #EEF0FF;
+    color: var(--color-blue-deep);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.featureText h2 {
+    font-size: 2.5rem;
+    color: var(--color-blue-dark);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.featureText p {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.featureList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2.5rem;
+}
+
+.featureList li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--color-blue-dark);
+    font-weight: 500;
+}
+
+.listIcon {
+    color: var(--color-lilac-light);
+    background-color: var(--color-blue-dark);
+    padding: 4px;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+}
+
+.btnCta {
+    background-color: var(--color-blue-medium);
+    color: var(--color-white);
+    padding: 1rem 2rem;
+    border-radius: var(--radius-md);
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(139, 149, 225, 0.4);
+}
+
+.btnCta:hover {
+    background-color: var(--color-blue-deep);
+    transform: translateY(-3px);
+}
+
+/* Mockup do Celular CSS Puro */
+.phoneMockup {
+    width: 300px;
+    height: 580px;
+    background: var(--color-blue-dark);
+    border-radius: 40px;
+    padding: 12px;
+    margin: 0 auto;
+    box-shadow: 0 25px 50px -12px rgba(50, 68, 136, 0.25);
+    position: relative;
+}
+
+.phoneScreen {
+    background: var(--color-white);
+    width: 100%;
+    height: 100%;
+    border-radius: 32px;
+    overflow: hidden;
+    position: relative;
+}
+
+.appHeader {
+    height: 140px;
+    background: linear-gradient(135deg, var(--color-blue-medium), var(--color-blue-deep));
+    border-radius: 0 0 24px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.appHeader img {
+    width: 80%;
+    height: auto;
+}
+
+.appBody {
+    padding: 20px;
+}
+
+.skeletonLine {
+    height: 12px;
+    background: #EEE;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    width: 60%;
+}
+
+.skeletonBlock {
+    height: 100px;
+    background: #F4F6FF;
+    border-radius: 16px;
+    margin-bottom: 15px;
+}
+
+.floatingUiCard {
+    position: absolute;
+    bottom: 40px;
+    right: 30px;
+    background: var(--color-white);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #4CAF50;
+    font-weight: 700;
+    color: var(--color-blue-dark);
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* ================= RESPONSIVE ================= */
+
+
+@media (max-width: 1150px) {
+
+    .stepsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .heroTitle {
+        font-size: 2.2rem;
+    }
+
+    .stepsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .stepsSection {
+        margin-top: 0;
+        /* Sobe para sobrepor o Hero levemente */
+        padding-bottom: 0;
+        position: relative;
+        z-index: 20;
+    }
+
+    .stepCard {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .iconWrapper {
+        margin-bottom: 0;
+        margin-right: 1.5rem;
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+    }
+
+
+    .appFeatureSection {
+        padding: 6rem 0;
+        background-color: transparent;
+        height: 40%;
+    }
+
+    .featureLayout {
+        grid-template-columns: 1fr;
+        text-align: left;
+        height: 60vh;
+    }
+
+    .featureList li {
+        justify-content: left;
+        text-align: left;
+    }
+
+    .floatingUiCard {
+        right: 10px;
+        /* Ajuste para não sair da tela no mobile */
+    }
+
+    .featureText {
+        gap: 10px;
+        position: absolute;
+        width: 95%;
+        left: 5%;
+        z-index: 2;
+    }
+
+    .featureText p {
+        border-radius: 8px;
+        color: var(--color-white);
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
+        background-color: rgba(50, 68, 136, 0.7);
+        width: 95%;
+        text-align: left;
+        padding: 10px;
+    }
+
+    .featureList {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 2.5rem;
+    }
+
+    .featureList li {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        font-weight: 500;
+        border-radius: 6px;
+        justify-content: left;
+        padding: 2px 2px 4px 6px;
+        width: 90%;
+        text-align: left;
+        /* Faz o fundo acompanhar o tamanho do texto */
+    }
+
+    .listIcon {
+        color: var(--color-lilac-light);
+        background-color: var(--color-blue-dark);
+        padding: 4px;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+
+    }
+
+    .btnCta {
+        background-color: var(--color-blue-medium);
+        color: var(--color-white);
+        padding: 1rem 2rem;
+        border-radius: var(--radius-md);
+        border: none;
+        font-weight: 650;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 4px 15px rgba(139, 149, 225, 0.4);
+    }
+
+    .btnCta:hover {
+        background-color: var(--color-blue-deep);
+        transform: translateY(-3px);
+    }
+
+
+    /* Mockup do Celular CSS Puro */
+    .phoneMockup {
+        width: 180px;
+        height: 320px;
+        background: var(--color-blue-dark);
+        border-radius: 40px;
+        padding: 12px;
+        margin: 0 auto;
+        box-shadow: 0 25px 50px -12px rgba(50, 68, 136, 0.25);
+        position: static;
+        z-index: 1;
+        opacity: 0.9;
+        filter: blur(7px) brightness(1.0);
+        margin-left: 30vw;
+    }
+
+    .phoneScreen {
+        background: var(--color-white);
+        width: 100%;
+        height: 100%;
+        border-radius: 32px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .appHeader {
+        height: 100px;
+        background: linear-gradient(135deg, var(--color-blue-medium), var(--color-blue-deep));
+        border-radius: 0 0 24px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .appHeader img {
+        width: 80%;
+        height: auto;
+    }
+
+    .appBody {
+        padding: 20px;
+    }
+
+    .skeletonLine {
+        height: 12px;
+        background: #EEE;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        width: 60%;
+    }
+
+    .skeletonBlock {
+        height: 100px;
+        background: #F4F6FF;
+        border-radius: 16px;
+        margin-bottom: 15px;
+    }
+
+    .floatingUiCard {
+        position: absolute;
+        bottom: 70px;
+        right: 60px;
+        background: var(--color-white);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #4CAF50;
+        font-weight: 700;
+        color: var(--color-blue-dark);
+        animation: float 3s ease-in-out infinite;
+    }
+}
+
+
+@media (max-width: 376px) {
+
+    .phoneMockup {
+        width: 160px;
+        height: 300px;
+    }
+
+    .featureLayout {
+        grid-template-columns: 1fr;
+        text-align: left;
+        height: 100vh;
+    }
+
+}

@@ -9,7 +9,7 @@ import logoHero from '../../assets/noScreen-whiteLogo.png';
 import iconBenefit from '../../assets/noScreen-iconLogo.png';
 
 const BePilotAmbassador = () => {
-    const formRef = useRef(null); // Referência para o formulário
+    const formRef = useRef(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -22,7 +22,7 @@ const BePilotAmbassador = () => {
         house_number: '',
         complement: '',
         city: '',
-        uff_state: '',
+        uf_state: '',
         questions_suggestion: '',
         group: 0
     });
@@ -32,8 +32,7 @@ const BePilotAmbassador = () => {
     const [submitStatus, setSubmitStatus] = useState(null);
     const [cepTimeout, setCepTimeout] = useState(null);
 
-    // --- Lógica de Validação e Formatação (Mantida e Otimizada) ---
-
+    // --- Lógica de Validação (Mantida Intacta) ---
     const validateField = (name, value) => {
         let error = '';
         switch (name) {
@@ -67,7 +66,7 @@ const BePilotAmbassador = () => {
             case 'phone':
                 const phoneClean = value.replace(/\D/g, '');
                 if (!value) error = "Celular/WhatsApp é obrigatório";
-                else if (phoneClean.length < 10) error = "Telefone inválido";
+                else if (phoneClean.length <= 10) error = "Telefone inválido";
                 else if (phoneClean.length > 11) error = "Telefone inválido";
                 break;
             case 'cep':
@@ -78,7 +77,7 @@ const BePilotAmbassador = () => {
             case 'house_number':
                 if (!value.trim()) error = "Número é obrigatório";
                 break;
-            case 'uff_state':
+            case 'uf_state':
                 if (value && value.length !== 2) error = "UF inválida";
                 else if (!value.trim()) error = "UF obrigatória";
                 break;
@@ -106,7 +105,7 @@ const BePilotAmbassador = () => {
             if (name === 'cpf') formattedValue = formatCPF(value);
             if (name === 'cep') formattedValue = formatCEP(value);
             if (name === 'phone') formattedValue = formatPhone(value);
-            if (name === 'uff_state') formattedValue = value.toUpperCase();
+            if (name === 'uf_state') formattedValue = value.toUpperCase();
         }
 
         setFormData(prev => ({ ...prev, [name]: formattedValue }));
@@ -120,9 +119,7 @@ const BePilotAmbassador = () => {
             const cepClean = formattedValue.replace(/\D/g, '');
             if (cepTimeout) clearTimeout(cepTimeout);
 
-            if (cepClean.length !== 8) {
-                // Não limpa imediatamente para não frustrar o usuário enquanto digita
-            } else {
+            if (cepClean.length === 8) {
                 const newTimeout = setTimeout(async () => {
                     await fetchCEP(cepClean);
                 }, 800);
@@ -144,18 +141,16 @@ const BePilotAmbassador = () => {
                         address: data.logradouro || '',
                         neighborhood: data.bairro || '',
                         city: data.localidade || '',
-                        uff_state: data.uf || '',
+                        uf_state: data.uf || '',
                     }));
 
-                    // Limpa erros relacionados ao endereço
                     setErrors(prev => {
                         const newErrs = { ...prev };
-                        ['cep', 'address', 'neighborhood', 'city', 'uff_state'].forEach(k => delete newErrs[k]);
+                        ['cep', 'address', 'neighborhood', 'city', 'uf_state'].forEach(k => delete newErrs[k]);
                         return newErrs;
                     });
                 } else {
                     setErrors(prev => ({ ...prev, cep: 'CEP não encontrado' }));
-                    // Opcional: limpar endereço se CEP não encontrado
                 }
             } catch (error) {
                 console.error("Erro ao buscar CEP", error);
@@ -173,8 +168,7 @@ const BePilotAmbassador = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        // Lista de campos obrigatórios para verificar
-        const fields = ['name', 'email', 'cpf', 'birth_day', 'phone', 'cep', 'address', 'neighborhood', 'house_number', 'city', 'uff_state'];
+        const fields = ['name', 'email', 'cpf', 'birth_day', 'phone', 'cep', 'address', 'neighborhood', 'house_number', 'city', 'uf_state'];
 
         fields.forEach(field => {
             const error = validateField(field, formData[field]);
@@ -185,9 +179,11 @@ const BePilotAmbassador = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+    // Lógica melhorada para scroll
     const scrollToFirstError = () => {
         setTimeout(() => {
-            const firstErrorElement = document.querySelector(`.${styles.inputError}`);
+            // Procura pelo atributo data-has-error que definimos no InputField
+            const firstErrorElement = document.querySelector('[data-has-error="true"] input');
             if (firstErrorElement) {
                 firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 firstErrorElement.focus();
@@ -223,14 +219,14 @@ const BePilotAmbassador = () => {
             setFormData({
                 name: '', email: '', cpf: '', birth_day: '', phone: '',
                 cep: '', address: '', neighborhood: '', house_number: '', complement: '',
-                city: '', uff_state: '', questions_suggestion: '', group: 0
+                city: '', uf_state: '', questions_suggestion: '', group: 0
             });
             setErrors({});
-            window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } catch (error) {
             console.error('Erro:', error);
             setSubmitStatus('error');
+            scrollToFirstError(); // Scroll para o topo ou aviso de erro
         } finally {
             setLoading(false);
         }
@@ -245,265 +241,257 @@ const BePilotAmbassador = () => {
             <Header />
 
             <main className={styles.mainContent}>
-                {/* Hero Section */}
+                {/* Hero Section Modernizada */}
                 <section className={styles.heroSection}>
                     <div className={styles.heroContent}>
                         <img src={logoHero} alt="BePilot Logo" className={styles.heroLogo} />
                         <h1 className={styles.heroTitle}>O Futuro da Instrução de Trânsito</h1>
                         <p className={styles.heroText}>
-                            Torne-se um <strong>Instrutor Embaixador BePilot</strong>. Garanta benefícios exclusivos,
-                            isenção vitalícia de taxas e destaque em sua região.
+                            Programa de Instrutores Embaixadores BePilot. Tecnologia, benefícios exclusivos e isenção vitalícia de taxas para os pioneiros.
                         </p>
-                        <a href="#cadastro" className={styles.heroButton}>Quero ser Embaixador</a>
+                        <a href="#cadastro" className={styles.heroButton}>Fazer Pré-Inscrição</a>
                     </div>
                 </section>
 
                 {/* Benefits Section */}
                 <section className={styles.benefitsSection}>
-                    <h2 className={styles.sectionTitle}>Por que se cadastrar agora?</h2>
-                    <div className={styles.benefitsGrid}>
-                        <BenefitCard
-                            img="https://img.freepik.com/fotos-gratis/jovem-sorridente-testando-um-carro_23-2148333009.jpg"
-                            title="Pioneirismo"
-                            text="Seja um dos primeiros a utilizar a tecnologia que conecta instrutores e alunos de forma inteligente."
-                        />
-                        <BenefitCard
-                            img="https://img.freepik.com/fotos-gratis/elegante-motorista-de-taxi-em-traje_23-2149204585.jpg"
-                            title="Gratuidade Vitalícia"
-                            text="Embaixadores cadastrados nesta fase terão isenção total de taxas da plataforma para sempre."
-                        />
-                        <BenefitCard
-                            img="https://img.freepik.com/fotos-gratis/homem-oferecendo-sua-mao-para-apertar_23-2148384936.jpg"
-                            title="Construa Conosco"
-                            text="Sua opinião é fundamental. Ajudará a definir as próximas funcionalidades sob medida para você."
-                        />
-                        <BenefitCard
-                            img="https://img.freepik.com/fotos-gratis/pessoa-que-se-prepara-para-obter-a-carta-de-conducao_23-2150167549.jpg"
-                            title="Destaque no App"
-                            text="Ganhe o selo especial de Instrutor Embaixador e tenha prioridade de visualização em sua região."
-                        />
+                    <div className={styles.container}>
+                        <div className={styles.sectionHeader}>
+                            <h2 className={styles.sectionTitle}>Benefícios Exclusivos!</h2>
+                            <p className={styles.sectionSubtitle}>Por que se tornar um instrutor embaixador agora?</p>
+                        </div>
+
+                        <div className={styles.benefitsGrid}>
+                            <BenefitCard
+                                title="Pioneirismo Tecnológico"
+                                text="Acesso antecipado à plataforma que conecta instrutores e alunos através de geolocalização inteligente."
+                            />
+                            <BenefitCard
+                                title="Isenção Vitalícia"
+                                text="Instrutores fundadores garantem 0% de taxas administrativas na plataforma para sempre."
+                            />
+                            <BenefitCard
+                                title="Co-criação"
+                                text="Participação ativa no desenvolvimento de funcionalidades, moldando o app às suas necessidades reais."
+                            />
+                            <BenefitCard
+                                title="Selo de Autoridade"
+                                text="Destaque verificado no aplicativo, garantindo maior visibilidade na sua região e confiança para novos alunos."
+                            />
+                        </div>
                     </div>
                 </section>
 
                 {/* Form Section */}
                 <section id="cadastro" className={styles.formSection}>
                     <div className={styles.formContainer}>
-                        <div className={styles.formHeader}>
-                            <img src={iconBenefit} alt="Ícone" className={styles.formIcon} />
-                            <h2>Pré-Cadastro de Instrutor</h2>
-                            <p>Preencha seus dados para garantir sua vaga de Instrutor Embaixador.</p>
-                        </div>
-
                         {submitStatus === 'success' ? (
-                            <div className={styles.successState}>
-                                <div className={styles.successIcon}>🎉</div>
-                                <h3>Cadastro Realizado com Sucesso!</h3>
-                                <p>Agradecemos seu interesse. Entraremos em contato em breve.</p>
-                                <div className={styles.whatsappBox}>
-                                    <p>Não perca nenhuma novidade!<br />Entre em nosso grupo oficial dos Instrutores Embaixadores no Whatsapp:</p>
-                                    <a href="https://chat.whatsapp.com/L9BQqgWC4j07MBrNbEd7Ll" target="_blank" rel="noopener noreferrer" className={styles.whatsappButton}>
-                                        Entrar no Grupo VIP
-                                    </a>
-                                </div>
-                                <button onClick={() => setSubmitStatus(null)} className={styles.textButton}>
-                                    Enviar outro pré-cadastro
-                                </button>
-                            </div>
+                            <SuccessMessage onReset={() => setSubmitStatus(null)} />
                         ) : (
-                            <form ref={formRef} onSubmit={handleSubmit} className={styles.formGrid} noValidate>
-
-                                {/* Grupo: Dados Pessoais */}
-                                <div className={styles.formGroupTitle}>Dados Pessoais</div>
-
-                                <InputField
-                                    label="Nome Completo"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    error={errors.name}
-                                    placeholder="Digite seu nome completo"
-                                    required
-                                    className={styles.spanFull}
-                                />
-
-                                <InputField
-                                    label="Email"
-                                    name="email"
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    error={errors.email}
-                                    placeholder="seu@email.com"
-                                    required
-                                />
-
-                                <InputField
-                                    label="Celular / WhatsApp"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    error={errors.phone}
-                                    placeholder="(XX) 9XXXX-XXXX"
-                                    required
-                                />
-
-                                <InputField
-                                    label="CPF"
-                                    name="cpf"
-                                    value={formData.cpf}
-                                    onChange={handleChange}
-                                    error={errors.cpf}
-                                    placeholder="000.000.000-00"
-                                    maxLength={14}
-                                    required
-                                />
-
-                                <InputField
-                                    label="Data de Nascimento"
-                                    name="birth_day"
-                                    type="date"
-                                    value={formData.birth_day}
-                                    onChange={handleChange}
-                                    error={errors.birth_day}
-                                    max={new Date().toISOString().split('T')[0]}
-                                    required
-                                />
-
-                                {/* Grupo: Endereço */}
-                                <div className={styles.formGroupTitle}>Localização</div>
-
-                                <div className={styles.cepWrapper}>
-                                    <InputField
-                                        label="CEP"
-                                        name="cep"
-                                        value={formData.cep}
-                                        onChange={handleChange}
-                                        onBlur={handleBlurCEP}
-                                        error={errors.cep}
-                                        placeholder="00000-000"
-                                        maxLength={9}
-                                        required
-                                        disabled={loading}
-                                    />
-                                    {loading && <span className={styles.loadingIndicator}>Buscando...</span>}
-                                </div>
-
-                                <div className={styles.emptySpace}></div> {/* Spacer for grid alignment */}
-
-                                <InputField
-                                    label="Endereço"
-                                    name="address"
-                                    value={formData.address}
-                                    readOnly
-                                    error={errors.address}
-                                    className={`${styles.spanFull} ${styles.readOnly}`}
-                                    placeholder="Preenchimento automático"
-                                />
-
-                                <InputField
-                                    label="Número"
-                                    name="house_number"
-                                    value={formData.house_number}
-                                    onChange={handleChange}
-                                    error={errors.house_number}
-                                    placeholder="123"
-                                    required
-                                />
-
-                                <InputField
-                                    label="Complemento (Opcional)"
-                                    name="complement"
-                                    value={formData.complement}
-                                    onChange={handleChange}
-                                    placeholder="Apto, Bloco, etc."
-                                />
-
-                                <InputField
-                                    label="Bairro"
-                                    name="neighborhood"
-                                    value={formData.neighborhood}
-                                    readOnly
-                                    error={errors.neighborhood}
-                                    className={styles.readOnly}
-                                />
-
-                                <div className={styles.cityStateGrid}>
-                                    <InputField
-                                        label="Cidade"
-                                        name="city"
-                                        value={formData.city}
-                                        readOnly
-                                        error={errors.city}
-                                        className={styles.readOnly}
-                                    />
-                                    <InputField
-                                        label="UF"
-                                        name="uff_state"
-                                        value={formData.uff_state}
-                                        readOnly
-                                        error={errors.uff_state}
-                                        className={styles.readOnly}
-                                        maxLength={2}
-                                    />
-                                </div>
-
-                                {/* Grupo: Finalização */}
-                                <div className={styles.formGroupTitle}>Finalização</div>
-
-                                <div className={styles.spanFull}>
-                                    <label className={styles.label}>Dúvidas ou Sugestões (Opcional)</label>
-                                    <br />
-                                    <br />
-                                    <InputField
-                                        type="text"
-                                        name="questions_suggestion"
-                                        value={formData.questions_suggestion}
-                                        onChange={handleChange}
-                                        placeholder="Gostaria de sugerir..."
-                                        className={styles.input}
-                                    />
-                                </div>
-
-                                <div className={`${styles.spanFull} ${styles.checkboxWrapper}`}>
-                                    <label className={styles.checkboxLabel}>
-                                        <input
-                                            type="checkbox"
-                                            name="group"
-                                            checked={formData.group === 1}
-                                            onChange={handleChange}
-                                            className={styles.spanFull}
-                                        />
-                                        <span className={styles.checkboxText}>
-                                            Deseja entrar no grupo do WhatsApp para receber atualizações exclusivas?
-                                        </span>
-                                    </label>
-                                </div>
-
-                                {submitStatus === 'error' && (
-                                    <div className={`${styles.spanFull} ${styles.errorMessage}`}>
-                                        Ocorreu um erro ao enviar. Verifique os campos em vermelho e tente novamente.
+                            <>
+                                <div className={styles.formHeader}>
+                                    <div className={styles.iconWrapper}>
+                                        <img src={iconBenefit} alt="Ícone" />
                                     </div>
-                                )}
-
-                                <div className={styles.spanFull}>
-                                    <button type="submit" className={styles.submitButton} disabled={loading}>
-                                        {loading ? 'Processando...' : 'Confirmar Pré-Cadastro'}
-                                    </button>
+                                    <h2>Ficha de Pré-Cadastro</h2>
+                                    <p>Preencha os campos abaixo com atenção para validar sua elegibilidade.</p>
                                 </div>
-                            </form>
+
+                                <form ref={formRef} onSubmit={handleSubmit} className={styles.formLayout} noValidate>
+
+                                    {/* Seção 1: Dados Pessoais */}
+                                    <div className={styles.formSectionGroup}>
+                                        <h3 className={styles.groupTitle}>Identificação</h3>
+                                        <div className={styles.gridRow}>
+                                            <InputField
+                                                label="Nome Completo"
+                                                name="name"
+                                                value={formData.name}
+                                                onChange={handleChange}
+                                                error={errors.name}
+                                                placeholder="Nome completo conforme documento"
+                                                required
+                                                className={styles.colSpan2}
+                                            />
+                                            <InputField
+                                                label="Email Corporativo ou Pessoal"
+                                                name="email"
+                                                type="email"
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                error={errors.email}
+                                                placeholder="seu@email.com"
+                                                required
+                                            />
+                                            <InputField
+                                                label="Celular / WhatsApp"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleChange}
+                                                error={errors.phone}
+                                                placeholder="(00) 00000-0000"
+                                                required
+                                            />
+                                            <InputField
+                                                label="CPF"
+                                                name="cpf"
+                                                value={formData.cpf}
+                                                onChange={handleChange}
+                                                error={errors.cpf}
+                                                placeholder="000.000.000-00"
+                                                maxLength={14}
+                                                required
+                                            />
+                                            <InputField
+                                                label="Data de Nascimento"
+                                                name="birth_day"
+                                                type="date"
+                                                value={formData.birth_day}
+                                                onChange={handleChange}
+                                                error={errors.birth_day}
+                                                max={new Date().toISOString().split('T')[0]}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Seção 2: Localização */}
+                                    <div className={styles.formSectionGroup}>
+                                        <h3 className={styles.groupTitle}>Endereço e Atuação</h3>
+                                        <div className={styles.gridRow}>
+                                            <div className={styles.cepContainer}>
+                                                <InputField
+                                                    label="CEP"
+                                                    name="cep"
+                                                    value={formData.cep}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlurCEP}
+                                                    error={errors.cep}
+                                                    placeholder="00000-000"
+                                                    maxLength={9}
+                                                    required
+                                                    disabled={loading}
+                                                />
+                                                {loading && <div className={styles.spinner}></div>}
+                                            </div>
+
+                                            <InputField
+                                                label="Endereço"
+                                                name="address"
+                                                value={formData.address}
+                                                readOnly
+                                                error={errors.address}
+                                                className={`${styles.colSpan2} ${styles.readOnlyField}`}
+                                                placeholder="Logradouro"
+                                            />
+
+                                            <InputField
+                                                label="Número"
+                                                name="house_number"
+                                                value={formData.house_number}
+                                                onChange={handleChange}
+                                                error={errors.house_number}
+                                                placeholder="Nº"
+                                                required
+                                            />
+
+                                            <InputField
+                                                label="Complemento"
+                                                name="complement"
+                                                value={formData.complement}
+                                                onChange={handleChange}
+                                                placeholder="Apto, Bloco (Opcional)"
+                                            />
+
+                                            <InputField
+                                                label="Bairro"
+                                                name="neighborhood"
+                                                value={formData.neighborhood}
+                                                readOnly
+                                                error={errors.neighborhood}
+                                                className={styles.readOnlyField}
+                                                placeholder="Bairro"
+                                            />
+
+                                            <div className={styles.cityUfGroup}>
+                                                <InputField
+                                                    label="Cidade"
+                                                    name="city"
+                                                    value={formData.city}
+                                                    readOnly
+                                                    error={errors.city}
+                                                    className={`${styles.readOnlyField} ${styles.flexGrow}`}
+                                                />
+                                                <InputField
+                                                    label="UF"
+                                                    name="uf_state"
+                                                    value={formData.uf_state}
+                                                    readOnly
+                                                    error={errors.uf_state}
+                                                    className={`${styles.readOnlyField} ${styles.flexShrink}`}
+                                                    maxLength={2}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Seção 3: Finalização */}
+                                    <div className={styles.formSectionGroup}>
+                                        <h3 className={styles.groupTitle}>Preferências</h3>
+
+                                        <div className={styles.inputBlock}>
+                                            <label className={styles.label}>Dúvidas ou Sugestões</label>
+                                            <textarea
+                                                name="questions_suggestion"
+                                                value={formData.questions_suggestion}
+                                                onChange={handleChange}
+                                                placeholder="Tem alguma sugestão para a plataforma? Digite aqui..."
+                                                className={styles.textarea}
+                                                rows="3"
+                                            />
+                                        </div>
+
+                                        <div className={styles.checkboxContainer}>
+                                            <label className={styles.checkboxLabel}>
+                                                <input
+                                                    type="checkbox"
+                                                    name="group"
+                                                    checked={formData.group === 1}
+                                                    onChange={handleChange}
+                                                />
+                                                <span className={styles.checkboxText}>
+                                                    Autorizo o contato e desejo entrar no grupo VIP de instrutores para atualizações.
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {submitStatus === 'error' && (
+                                        <div className={styles.errorMessage}>
+                                            Não foi possível enviar. Verifique os campos destacados em vermelho.
+                                        </div>
+                                    )}
+
+                                    <div className={styles.footerAction}>
+                                        <button type="submit" className={styles.submitButton} disabled={loading}>
+                                            {loading ? 'Processando Inscrição...' : 'Confirmar Pré-Cadastro'}
+                                        </button>
+                                        <p className={styles.privacyNote}>Seus dados estão seguros e serão utilizados apenas para fins de cadastro na plataforma.</p>
+                                    </div>
+                                </form>
+                            </>
                         )}
                     </div>
                 </section>
             </main>
-
             <Footer />
         </div>
     );
 };
 
-// Sub-componentes para limpar o JSX principal
+// Componente de Input Refatorado
 const InputField = ({ label, name, value, onChange, error, className = '', readOnly, type = "text", ...props }) => (
-    <div className={`${styles.inputGroup} ${className}`}>
+    <div className={`${styles.inputWrapper} ${className}`} data-has-error={!!error}>
         <label htmlFor={name} className={styles.label}>
             {label} {props.required && <span className={styles.requiredMark}>*</span>}
         </label>
@@ -521,13 +509,39 @@ const InputField = ({ label, name, value, onChange, error, className = '', readO
     </div>
 );
 
-const BenefitCard = ({ img, title, text }) => (
+// Componente de Card de Benefício Refatorado
+const BenefitCard = ({ title, text }) => (
     <div className={styles.benefitCard}>
-        <div className={styles.imageContainer}>
-            <img src={img} alt={title} className={styles.cardImage} />
-        </div>
+        <div className={styles.cardHeaderLine}></div>
         <h3>{title}</h3>
         <p>{text}</p>
+    </div>
+);
+
+// Componente de Sucesso Refatorado
+const SuccessMessage = ({ onReset }) => (
+    <div className={styles.successContainer}>
+        <div className={styles.successIconCircle}>
+            <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={styles.checkIcon}>
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <h3>Cadastro Recebido</h3>
+        <p>Seus dados foram registrados em nossa base de embaixadores.</p>
+
+        <div className={styles.whatsappCard}>
+            <div className={styles.whatsappContent}>
+                <h4>Próximo Passo: Comunidade VIP</h4>
+                <p>Para não perder os lançamentos e cronogramas, acesse o grupo oficial.</p>
+            </div>
+            <a href="https://chat.whatsapp.com/L9BQqgWC4j07MBrNbEd7Ll" target="_blank" rel="noopener noreferrer" className={styles.whatsappButton}>
+                Acessar Grupo
+            </a>
+        </div>
+
+        <button onClick={onReset} className={styles.secondaryButton}>
+            Cadastrar novo instrutor
+        </button>
     </div>
 );
 

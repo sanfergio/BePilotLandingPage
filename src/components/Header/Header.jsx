@@ -16,20 +16,20 @@ const Header = () => {
                 </a>
                 {/* Menu Desktop */}
                 <nav className={`${styles.nav} ${isOpen ? styles.open : ''}`}>
-                    <a href="#recursos">Como funciona?</a>
-                    <a href="#sobre">Sobre</a>
-                    <a href="#precos">Planos</a>
-                    <a href="#contato">Contato</a>
+                    <a href="/como-funciona">Como funciona?</a>
+                    <a href="/sobre">Sobre</a>
+                    <a href="/planos">Planos</a>
+                    <a href="/contato">Contato</a>
 
                     <div className={styles.authButtonsMobile}>
-                        <button className={styles.btnLogin}>Login</button>
-                        <button className={styles.btnCta}>Comece Agora</button>
+                        <a href='/planos' className={styles.btnLogin}>Login</a>
+                        <a href='/planos' className={styles.btnCta}>Comece Agora</a>
                     </div>
                 </nav>
 
                 <div className={styles.actions}>
-                    <button className={styles.btnLogin}>Login</button>
-                    <button className={styles.btnCta}>Comece Agora</button>
+                    <a href='/planos' className={styles.btnLogin}>Login</a>
+                    <a href='/planos' className={styles.btnCta}>Comece Agora</a>
 
                     {/* Menu Hamburguer Mobile */}
                     <div className={styles.hamburger} onClick={() => setIsOpen(!isOpen)}>

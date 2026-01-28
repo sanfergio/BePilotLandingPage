@@ -16,16 +16,16 @@ const Footer = () => {
 
                 <div className={styles.col}>
                     <h4>Empresa</h4>
-                    <a href="#">Sobre</a>
-                    <a href="#">Como funciona?</a>
-                    <a href="#">Fale conosco</a>
+                    <a href="/sobre">Sobre</a>
+                    <a href="/como-funciona">Como funciona?</a>
+                    <a href="/contato">Fale conosco</a>
                 </div>
 
                 <div className={styles.col}>
                     <h4>Suporte</h4>
-                    <a href="#">Central de Ajuda</a>
-                    <a href="#">Termos de Uso</a>
-                    <a href="#">Privacidade</a>
+                    <a href="/central-de-ajuda">Central de Ajuda</a>
+                    <a href="/termos-de-uso">Termos de Uso</a>
+                    <a href="/politica-de-privacidade">Privacidade</a>
                 </div>
 
                 <div className={styles.col}>

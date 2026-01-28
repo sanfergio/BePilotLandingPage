@@ -22,7 +22,7 @@ const BePilotCFC = () => {
         name: '', email: '', cpf: '', phone: '',
         cnpj: '', businessName: '', businessEmail: '', businessPhone: '', businessWebsite: '',
         cep: '', address: '', neighborhood: '', house_number: '', complement: '',
-        city: '', uff_state: '',
+        city: '', uf_state: '',
         instructor_count: '', vehicle_count: '',
         questions_suggestion: '', group: 0
     });
@@ -38,7 +38,7 @@ const BePilotCFC = () => {
     const steps = [
         { id: 1, key: 'responsavel', title: 'Responsável', icon: <Icons.User />, fields: ['name', 'cpf', 'email', 'phone'] },
         { id: 2, key: 'empresa', title: 'Empresa', icon: <Icons.Building />, fields: ['cnpj', 'businessName', 'businessEmail', 'businessPhone', 'instructor_count', 'vehicle_count'] },
-        { id: 3, key: 'endereco', title: 'Endereço', icon: <Icons.MapPin />, fields: ['cep', 'address', 'house_number', 'neighborhood', 'city', 'uff_state'] }
+        { id: 3, key: 'endereco', title: 'Endereço', icon: <Icons.MapPin />, fields: ['cep', 'address', 'house_number', 'neighborhood', 'city', 'uf_state'] }
     ];
 
     const formatCNPJ = (value) => {
@@ -111,7 +111,7 @@ const BePilotCFC = () => {
             case 'city':
                 if (!cleanValue) error = "Cidade obrigatória";
                 break;
-            case 'uff_state':
+            case 'uf_state':
                 if (value && value.length !== 2) error = "UF inválida";
                 else if (!value.trim()) error = "UF obrigatória";
                 break;
@@ -140,7 +140,7 @@ const BePilotCFC = () => {
             if (name === 'cnpj') formattedValue = formatCNPJ(value);
             if (name === 'cep') formattedValue = formatCEP(value);
             if (name === 'phone' || name === 'businessPhone') formattedValue = formatPhone(value);
-            if (name === 'uff_state') formattedValue = value.toUpperCase().slice(0, 2);
+            if (name === 'uf_state') formattedValue = value.toUpperCase().slice(0, 2);
         }
 
         setFormData(prev => ({ ...prev, [name]: formattedValue }));
@@ -176,13 +176,13 @@ const BePilotCFC = () => {
                         address: data.logradouro || '',
                         neighborhood: data.bairro || '',
                         city: data.localidade || '',
-                        uff_state: data.uf || '',
+                        uf_state: data.uf || '',
                     }));
 
                     // Limpar erros dos campos preenchidos
                     setErrors(prev => {
                         const newErrors = { ...prev };
-                        ['cep', 'address', 'neighborhood', 'city', 'uff_state'].forEach(k => delete newErrors[k]);
+                        ['cep', 'address', 'neighborhood', 'city', 'uf_state'].forEach(k => delete newErrors[k]);
                         return newErrors;
                     });
                 } else {
@@ -257,7 +257,7 @@ const BePilotCFC = () => {
             if (error) throw error;
 
             setSubmitStatus('success');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
 
         } catch (error) {
             console.error('Erro ao enviar:', error);
@@ -323,7 +323,7 @@ const BePilotCFC = () => {
                                 </div>
                                 <div className={styles.separator}></div>
                                 <div className={styles.statItem}>
-                                    <strong>24/7</strong>
+                                    <strong>24/5</strong>
                                     <span>Suporte</span>
                                 </div>
                             </div>
@@ -375,10 +375,10 @@ const BePilotCFC = () => {
                                 <p>Sua autoescola foi registrada em nossa base de parceiros pioneiros.</p>
                                 <div className={styles.successDivider}></div>
                                 <p className={styles.nextSteps}>
-                                    Nossa equipe de implantação entrará em contato em até <strong>24 horas úteis</strong>.
+                                    Entre no grupo VIP do Whatsapp para atualizações <strong>em tempo real.</strong>.
                                 </p>
                                 <div className={styles.actionButtons}>
-                                    <a href="https://chat.whatsapp.com/L9BQqgWC4j07MBrNbEd7Ll" target="_blank" rel="noopener noreferrer" className={styles.whatsappBtn}>
+                                    <a href="https://chat.whatsapp.com/BAiHEZcM925CEo8I4WRhH1" target="_blank" rel="noopener noreferrer" className={styles.whatsappBtn}>
                                         Acessar Grupo VIP
                                     </a>
                                     <button onClick={() => window.location.reload()} className={styles.outlineBtn}>
@@ -658,16 +658,16 @@ const BePilotCFC = () => {
                                             </div>
 
                                             <div className={styles.inputGroup}>
-                                                <label htmlFor="uff_state">UF *</label>
+                                                <label htmlFor="uf_state">UF *</label>
                                                 <input
-                                                    id="uff_state"
+                                                    id="uf_state"
                                                     type="text"
-                                                    name="uff_state"
-                                                    value={formData.uff_state}
+                                                    name="uf_state"
+                                                    value={formData.uf_state}
                                                     readOnly
                                                     className={styles.readOnly}
                                                 />
-                                                {errors.uff_state && <span className={styles.errorMsg}>{errors.uff_state}</span>}
+                                                {errors.uf_state && <span className={styles.errorMsg}>{errors.uf_state}</span>}
                                             </div>
                                         </div>
 
