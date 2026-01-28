@@ -22,13 +22,13 @@ const Header = () => {
                     <a href="/contato">Contato</a>
 
                     <div className={styles.authButtonsMobile}>
-                        <a href='/login' className={styles.btnLogin}>Login</a>
+                        <a href='/planos' className={styles.btnLogin}>Login</a>
                         <a href='/planos' className={styles.btnCta}>Comece Agora</a>
                     </div>
                 </nav>
 
                 <div className={styles.actions}>
-                    <a href='/login' className={styles.btnLogin}>Login</a>
+                    <a href='/planos' className={styles.btnLogin}>Login</a>
                     <a href='/planos' className={styles.btnCta}>Comece Agora</a>
 
                     {/* Menu Hamburguer Mobile */}
