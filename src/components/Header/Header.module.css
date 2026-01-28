@@ -72,6 +72,14 @@
     border-radius: 6px;
 }
 
+.btnCta a {
+    color: var(--color-white);
+}
+
+.nav a.btnCta {
+    color: var(--color-white);
+}
+
 .btnCta:hover {
     background: var(--color-blue-dark);
 }
@@ -111,7 +119,7 @@
         display: flex;
     }
 
-    .actions button {
+    .actions a {
         display: none;
         /* Esconde botões do header e joga pro menu */
     }

@@ -58,6 +58,7 @@
 
 .heroText {
     z-index: 2;
+    
 }
 
 .badge {
@@ -736,12 +737,12 @@
     .whatsappBtn,
     .outlineBtn {
         width: 100%;
-        text-align: center;
+        text-align: left;
     }
 
     .heroContainer {
         grid-template-columns: 1fr;
-        text-align: center;
+        text-align: left;
         gap: 40px;
     }
 

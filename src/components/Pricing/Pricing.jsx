@@ -1,70 +1,124 @@
-import React from 'react';
-import styles from './Pricing.module.css';
-import { Check, Users, Car, School } from 'lucide-react';
+import React from "react";
+import { Check, Users, Car, School } from "lucide-react";
+import styles from "./Pricing.module.css";
+// Supondo que estes componentes existam em sua estrutura
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
 
-const Pricing = () => {
+function Pricing() {
+    const plansData = [
+        {
+            id: "aluno",
+            title: "Aluno",
+            icon: <Users size={32} />,
+            price: "Grátis",
+            period: "/cadastro",
+            highlight: false,
+            ctaText: "Começar como Aluno",
+            ctaLink: "seja-aluno",
+            features: [
+                "Busca por instrutores qualificados",
+                "Agendamento de aulas online",
+                "Acompanhamento de horas",
+                "Simulados teóricos",
+                "Avaliações de instrutores",
+            ],
+        },
+        {
+            id: "instrutor",
+            title: "Instrutor",
+            icon: <Car size={32} />,
+            price: "Grátis",
+            period: "/cadastro",
+            highlight: true,
+            badge: "Mais Popular",
+            ctaText: "Começar como Instrutor",
+            ctaLink: "seja-instrutor",
+            features: [
+                "Perfil profissional destacado",
+                "Gestão de agenda e alunos",
+                "Receba pagamentos online",
+                "Relatórios de desempenho",
+                "Suporte prioritário",
+            ],
+        },
+        {
+            id: "cfc",
+            title: "Autoescola",
+            icon: <School size={32} />,
+            price: "Grátis",
+            period: "/cadastro",
+            highlight: false,
+            ctaText: "Cadastrar CFC",
+            ctaLink: "seja-cfc",
+            features: [
+                "Gestão completa de instrutores",
+                "Dashboard administrativo",
+                "Controle de frota e horários",
+                "Relatórios financeiros",
+                "Gerente de conta dedicado",
+            ],
+        },
+    ];
+
     return (
-        <section id="precos" className={styles.pricing}>
-            <div className={styles.container}>
-                <h2 className={styles.title}>Planos para cada Perfil</h2>
-                <div className={styles.cardsWrapper}>
+        <div className={styles.pageWrapper}>
 
-                    {/* Plano Aluno */}
-                    <div className={styles.card}>
-                        <div className={styles.iconWrapper}>
-                            <Users size={32} />
+
+            <div className={styles.mainContent}>
+                <section id="precos" className={styles.pricingSection}>
+                    <div className={styles.container}>
+                        <div className={styles.sectionHeader}>
+                            <h2 className={styles.title}>Planos para cada Perfil</h2>
+                            <p className={styles.subtitle}>
+                                Escolha a modalidade ideal e comece a transformar o trânsito hoje mesmo.
+                            </p>
                         </div>
-                        <h3>Aluno</h3>
-                        <div className={styles.price}>Grátis<span>/cadastro</span></div>
-                        <ul className={styles.featuresList}>
-                            <li><Check size={16} /> Busca por instrutores qualificados</li>
-                            <li><Check size={16} /> Agendamento de aulas online</li>
-                            <li><Check size={16} /> Acompanhamento de horas</li>
-                            <li><Check size={16} /> Simulados teóricos</li>
-                            <li><Check size={16} /> Avaliações de instrutores</li>
-                        </ul>
-                        <a href="seja-aluno" className={styles.btnOutline}>Começar como Aluno</a>
-                    </div>
 
-                    {/* Plano Instrutor (Destaque) */}
-                    <div className={`${styles.card} ${styles.highlight}`}>
-                        <div className={styles.badge}>Mais Popular</div>
-                        <div className={styles.iconWrapper}>
-                            <Car size={32} />
+                        <div className={styles.gridWrapper}>
+                            {plansData.map((plan) => (
+                                <article
+                                    key={plan.id}
+                                    className={`${styles.card} ${plan.highlight ? styles.highlightCard : ""}`}
+                                >
+                                    {plan.highlight && (
+                                        <div className={styles.badge}>{plan.badge}</div>
+                                    )}
+
+                                    <div className={styles.cardHeader}>
+                                        <div className={styles.iconWrapper}>{plan.icon}</div>
+                                        <h3 className={styles.cardTitle}>{plan.title}</h3>
+                                        <div className={styles.priceContainer}>
+                                            <span className={styles.currency}>{plan.price}</span>
+                                            <span className={styles.period}>{plan.period}</span>
+                                        </div>
+                                    </div>
+
+                                    <ul className={styles.featuresList}>
+                                        {plan.features.map((feature, index) => (
+                                            <li key={index}>
+                                                <Check size={18} className={styles.checkIcon} />
+                                                <span>{feature}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className={styles.cardFooter}>
+                                        <a
+                                            href={plan.ctaLink}
+                                            className={plan.highlight ? styles.btnPrimary : styles.btnOutline}
+                                        >
+                                            {plan.ctaText}
+                                        </a>
+                                    </div>
+                                </article>
+                            ))}
                         </div>
-                        <h3>Instrutor</h3>
-                        <div className={styles.price}>Grátis<span>/cadastro</span></div>
-                        <ul className={styles.featuresList}>
-                            <li><Check size={16} /> Perfil profissional destacado</li>
-                            <li><Check size={16} /> Gestão de agenda e alunos</li>
-                            <li><Check size={16} /> Receba pagamentos online</li>
-                            <li><Check size={16} /> Relatórios de desempenho</li>
-                            <li><Check size={16} /> Suporte prioritário</li>
-                        </ul>
-                        <a href="seja-instrutor" className={styles.btnSolid}>Começar como Instrutor</a>
                     </div>
-
-                    {/* Plano CFC */}
-                    <div className={styles.card}>
-                        <div className={styles.iconWrapper}>
-                            <School size={32} />
-                        </div>
-                        <h3>Autoescola</h3>
-                        <div className={styles.price}>Grátis<span>/cadastro</span></div>
-                        <ul className={styles.featuresList}>
-                            <li><Check size={16} /> Gestão completa de instrutores</li>
-                            <li><Check size={16} /> Dashboard administrativo</li>
-                            <li><Check size={16} /> Controle de frota e horários</li>
-                            <li><Check size={16} /> Relatórios financeiros</li>
-                            <li><Check size={16} /> Gerente de conta dedicado</li>
-                        </ul>
-                        <a href="seja-cfc" className={styles.btnOutline}>Cadastrar CFC</a>
-                    </div>
-
-                </div>
+                </section>
             </div>
-        </section>
+        </div>
     );
-};
+}
 
 export default Pricing;

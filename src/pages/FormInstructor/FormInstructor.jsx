@@ -66,7 +66,7 @@ const BePilotAmbassador = () => {
             case 'phone':
                 const phoneClean = value.replace(/\D/g, '');
                 if (!value) error = "Celular/WhatsApp é obrigatório";
-                else if (phoneClean.length < 10) error = "Telefone inválido";
+                else if (phoneClean.length <= 10) error = "Telefone inválido";
                 else if (phoneClean.length > 11) error = "Telefone inválido";
                 break;
             case 'cep':
@@ -249,7 +249,7 @@ const BePilotAmbassador = () => {
                         <p className={styles.heroText}>
                             Programa de Instrutores Embaixadores BePilot. Tecnologia, benefícios exclusivos e isenção vitalícia de taxas para os pioneiros.
                         </p>
-                        <a href="#cadastro" className={styles.heroButton}>Aplicar para Embaixador</a>
+                        <a href="#cadastro" className={styles.heroButton}>Fazer Pré-Inscrição</a>
                     </div>
                 </section>
 
@@ -257,8 +257,8 @@ const BePilotAmbassador = () => {
                 <section className={styles.benefitsSection}>
                     <div className={styles.container}>
                         <div className={styles.sectionHeader}>
-                            <h2 className={styles.sectionTitle}>Benefícios Exclusivos</h2>
-                            <p className={styles.sectionSubtitle}>Por que se tornar um embaixador agora?</p>
+                            <h2 className={styles.sectionTitle}>Benefícios Exclusivos!</h2>
+                            <p className={styles.sectionSubtitle}>Por que se tornar um instrutor embaixador agora?</p>
                         </div>
 
                         <div className={styles.benefitsGrid}>
@@ -276,7 +276,7 @@ const BePilotAmbassador = () => {
                             />
                             <BenefitCard
                                 title="Selo de Autoridade"
-                                text="Destaque verificado no aplicativo, garantindo maior visibilidade e confiança para novos alunos."
+                                text="Destaque verificado no aplicativo, garantindo maior visibilidade na sua região e confiança para novos alunos."
                             />
                         </div>
                     </div>

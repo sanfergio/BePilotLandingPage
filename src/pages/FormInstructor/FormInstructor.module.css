@@ -75,12 +75,14 @@
     font-weight: 800;
     margin-bottom: 1rem;
     line-height: 1.2;
+    text-align: left;
     letter-spacing: -0.02em;
 }
 
 .heroText {
     font-size: 1.125rem;
     line-height: 1.6;
+    text-align: left;
     margin-bottom: 2.5rem;
     color: rgba(255, 255, 255, 0.9);
     max-width: 600px;
@@ -553,10 +555,21 @@
 @media (max-width: 1150px) {
     .heroTitle {
         font-size: 2rem;
+        text-align: left;
+    }
+
+    .heroText {
+        font-size: 1rem;
+        text-align: left;
+    }
+
+    .sectionTitle{
+        font-size: 160%;
     }
 
     .formContainer {
         padding: 1.5rem;
+        text-align: left;
     }
 
     .gridRow {
