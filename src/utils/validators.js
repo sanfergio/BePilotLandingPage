@@ -88,3 +88,36 @@ export const validateCEP = (cep) => {
     const cleanCEP = cep.replace(/\D/g, '');
     return cleanCEP.length === 8;
 };
+
+
+export const validateCNPJ = (cnpj) => {
+    cnpj = cnpj.replace(/\D/g, '');
+
+    if (cnpj.length !== 14) return false;
+
+    // Elimina CNPJs com todos os dígitos iguais
+    if (/^(\d)\1+$/.test(cnpj)) return false;
+
+    // Validação dos dígitos verificadores
+    let soma = 0;
+    let resto;
+
+    for (let i = 1; i <= 12; i++) {
+        soma += parseInt(cnpj.substring(i - 1, i)) * (14 - i);
+    }
+
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(cnpj.substring(12, 13))) return false;
+
+    soma = 0;
+    for (let i = 1; i <= 13; i++) {
+        soma += parseInt(cnpj.substring(i - 1, i)) * (15 - i);
+    }
+
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(cnpj.substring(13, 14))) return false;
+
+    return true;
+};
