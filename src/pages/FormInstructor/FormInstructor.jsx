@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './FormInstructor.module.css';
 import supabase from '../../components/Keys/Keys.jsx';
 import { validateCPF, formatCPF, formatCEP } from '../../utils/validators.js';
@@ -9,6 +9,7 @@ import logoHero from '../../assets/noScreen-whiteLogo.png';
 import iconBenefit from '../../assets/noScreen-iconLogo.png';
 
 const BePilotAmbassador = () => {
+    const formRef = useRef(null); // Referência para o formulário
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -23,7 +24,7 @@ const BePilotAmbassador = () => {
         city: '',
         uff_state: '',
         questions_suggestion: '',
-        group: 0 // Inicializado como 0 (inteiro)
+        group: 0
     });
 
     const [loading, setLoading] = useState(false);
@@ -31,110 +32,77 @@ const BePilotAmbassador = () => {
     const [submitStatus, setSubmitStatus] = useState(null);
     const [cepTimeout, setCepTimeout] = useState(null);
 
-    // Validação em tempo real
+    // --- Lógica de Validação e Formatação (Mantida e Otimizada) ---
+
     const validateField = (name, value) => {
         let error = '';
-
         switch (name) {
             case 'name':
-                if (!value.trim()) {
-                    error = "Nome completo é obrigatório";
-                } else if (value.trim().length < 3) {
-                    error = "Nome deve ter pelo menos 3 caracteres";
-                }
+                if (!value.trim()) error = "Nome completo é obrigatório";
+                else if (value.trim().length < 3) error = "Nome deve ter pelo menos 3 caracteres";
                 break;
-
             case 'email':
-                if (!value) {
-                    error = "Email é obrigatório";
-                } else if (!/\S+@\S+\.\S+/.test(value)) {
-                    error = "Email inválido";
-                }
+                if (!value) error = "Email é obrigatório";
+                else if (!/\S+@\S+\.\S+/.test(value)) error = "Email inválido";
                 break;
-
             case 'cpf':
-                const cpfClean = value.replace(/\D/g, '');
-                if (!value) {
-                    error = "CPF é obrigatório";
-                } else if (cpfClean.length === 11 && !validateCPF(cpfClean)) {
-                    error = "CPF inválido";
-                }
+                if (!value) error = "CPF é obrigatório";
+                else if (value && value.length !== 14) error = "CPF inválido";
+                else if (!value.trim()) error = "CPF obrigatório";
+                else if (!validateCPF(value)) error = "CPF inválido";
                 break;
-
             case 'birth_day':
-                if (value) {
+                if (!value) error = "Data de nascimento obrigatória";
+                else {
                     const birthDate = new Date(value);
                     const today = new Date();
                     let age = today.getFullYear() - birthDate.getFullYear();
                     const monthDiff = today.getMonth() - birthDate.getMonth();
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
 
-                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                        age--;
-                    }
-
-                    if (age < 18) {
-                        error = "Você deve ter pelo menos 18 anos";
-                    } else if (age > 100) {
-                        error = "Data de nascimento inválida";
-                    }
+                    if (age < 18) error = "É necessário ter pelo menos 18 anos";
+                    else if (age > 100) error = "Data de nascimento inválida";
                 }
                 break;
-
             case 'phone':
                 const phoneClean = value.replace(/\D/g, '');
-                if (!value) {
-                    error = "Celular/WhatsApp é obrigatório";
-                } else if (phoneClean.length > 0 && phoneClean.length < 10) {
-                    error = "Telefone inválido";
-                }
+                if (!value) error = "Celular/WhatsApp é obrigatório";
+                else if (phoneClean.length < 10) error = "Telefone inválido";
+                else if (phoneClean.length > 11) error = "Telefone inválido";
                 break;
-
             case 'cep':
-                const cepClean = value.replace(/\D/g, '');
-                if (!value) {
-                    error = "CEP é obrigatório";
-                } else if (cepClean.length > 0 && cepClean.length !== 8) {
-                    error = "CEP inválido";
-                }
+                const cepCleanVal = value.replace(/\D/g, '');
+                if (!value) error = "CEP é obrigatório";
+                else if (cepCleanVal.length !== 8) error = "CEP incompleto";
                 break;
-
             case 'house_number':
-                if (!value.trim()) {
-                    error = "Número obrigatório";
-                }
+                if (!value.trim()) error = "Número é obrigatório";
                 break;
-
             case 'uff_state':
-                if (value && value.length !== 2) {
-                    error = "UF deve ter 2 caracteres";
-                }
+                if (value && value.length !== 2) error = "UF inválida";
+                else if (!value.trim()) error = "UF obrigatória";
                 break;
-
-            default:
-                break;
+            case 'address': if (!value.trim()) error = "Endereço obrigatório"; break;
+            case 'neighborhood': if (!value.trim()) error = "Bairro obrigatório"; break;
+            case 'city': if (!value.trim()) error = "Cidade obrigatória"; break;
+            default: break;
         }
-
         return error;
     };
 
     const formatPhone = (value) => {
         const numbers = value.replace(/\D/g, '');
-        if (numbers.length <= 10) {
-            return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-        } else {
-            return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-        }
+        if (numbers.length <= 10) return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
     };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         let formattedValue = value;
 
-        // Lógica específica para checkbox (0 ou 1)
         if (type === 'checkbox') {
             formattedValue = checked ? 1 : 0;
         } else {
-            // Formatação dos campos de texto
             if (name === 'cpf') formattedValue = formatCPF(value);
             if (name === 'cep') formattedValue = formatCEP(value);
             if (name === 'phone') formattedValue = formatPhone(value);
@@ -143,33 +111,18 @@ const BePilotAmbassador = () => {
 
         setFormData(prev => ({ ...prev, [name]: formattedValue }));
 
-        // Validação em tempo real (apenas para campos que não são checkbox)
         if (type !== 'checkbox') {
             const error = validateField(name, formattedValue);
-            setErrors(prev => ({
-                ...prev,
-                [name]: error
-            }));
+            setErrors(prev => ({ ...prev, [name]: error }));
         }
 
-        // Busca automática do CEP quando estiver completo
         if (name === 'cep') {
             const cepClean = formattedValue.replace(/\D/g, '');
-
-            // Limpa timeout anterior
             if (cepTimeout) clearTimeout(cepTimeout);
 
-            // Se CEP estiver incompleto, limpa endereço
             if (cepClean.length !== 8) {
-                setFormData(prev => ({
-                    ...prev,
-                    address: '',
-                    neighborhood: '',
-                    city: '',
-                    uff_state: ''
-                }));
+                // Não limpa imediatamente para não frustrar o usuário enquanto digita
             } else {
-                // Aguarda 800ms após o usuário parar de digitar para buscar CEP
                 const newTimeout = setTimeout(async () => {
                     await fetchCEP(cepClean);
                 }, 800);
@@ -194,44 +147,19 @@ const BePilotAmbassador = () => {
                         uff_state: data.uf || '',
                     }));
 
-                    // Limpa erro do CEP se existir
-                    if (errors.cep) {
-                        setErrors(prev => {
-                            const newErrors = { ...prev };
-                            delete newErrors.cep;
-                            return newErrors;
-                        });
-                    }
-
-                    // Valida os campos preenchidos automaticamente
-                    setErrors(prev => ({
-                        ...prev,
-                        address: data.logradouro ? '' : 'Endereço não encontrado',
-                        neighborhood: data.bairro ? '' : 'Bairro não encontrado',
-                        city: data.localidade ? '' : 'Cidade não encontrada',
-                        uff_state: data.uf ? '' : 'UF não encontrada'
-                    }));
+                    // Limpa erros relacionados ao endereço
+                    setErrors(prev => {
+                        const newErrs = { ...prev };
+                        ['cep', 'address', 'neighborhood', 'city', 'uff_state'].forEach(k => delete newErrs[k]);
+                        return newErrs;
+                    });
                 } else {
-                    // CEP não encontrado - limpa campos de endereço
-                    setFormData(prev => ({
-                        ...prev,
-                        address: '',
-                        neighborhood: '',
-                        city: '',
-                        uff_state: ''
-                    }));
-                    setErrors(prev => ({
-                        ...prev,
-                        cep: 'CEP não encontrado',
-                        address: 'Endereço obrigatório',
-                        neighborhood: 'Bairro obrigatório',
-                        city: 'Cidade obrigatória',
-                        uff_state: 'Estado obrigatório'
-                    }));
+                    setErrors(prev => ({ ...prev, cep: 'CEP não encontrado' }));
+                    // Opcional: limpar endereço se CEP não encontrado
                 }
             } catch (error) {
                 console.error("Erro ao buscar CEP", error);
-                setErrors(prev => ({ ...prev, cep: 'Erro ao buscar CEP' }));
+                setErrors(prev => ({ ...prev, cep: 'Erro na busca do CEP' }));
             } finally {
                 setLoading(false);
             }
@@ -240,105 +168,38 @@ const BePilotAmbassador = () => {
 
     const handleBlurCEP = async () => {
         const cepClean = formData.cep.replace(/\D/g, '');
-        if (cepClean.length === 8) {
-            await fetchCEP(cepClean);
-        }
+        if (cepClean.length === 8) await fetchCEP(cepClean);
     };
 
     const validateForm = () => {
         const newErrors = {};
+        // Lista de campos obrigatórios para verificar
+        const fields = ['name', 'email', 'cpf', 'birth_day', 'phone', 'cep', 'address', 'neighborhood', 'house_number', 'city', 'uff_state'];
 
-        // Validação do nome
-        if (!formData.name.trim()) {
-            newErrors.name = "Nome completo é obrigatório";
-        } else if (formData.name.trim().length < 3) {
-            newErrors.name = "Nome deve ter pelo menos 3 caracteres";
-        }
-
-        // Validação do email
-        if (!formData.email) {
-            newErrors.email = "Email é obrigatório";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = "Email inválido";
-        }
-
-        // Validação do CPF
-        if (!formData.cpf) {
-            newErrors.cpf = "CPF é obrigatório";
-        } else if (!validateCPF(formData.cpf.replace(/\D/g, ''))) {
-            newErrors.cpf = "CPF inválido";
-        }
-
-        // Validação da data de nascimento
-        if (!formData.birth_day) {
-            newErrors.birth_day = "Data de nascimento obrigatória";
-        } else {
-            const birthDate = new Date(formData.birth_day);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-
-            if (age < 18) {
-                newErrors.birth_day = "Você deve ter pelo menos 18 anos";
-            } else if (age > 100) {
-                newErrors.birth_day = "Data de nascimento inválida";
-            }
-        }
-
-        // Validação do telefone
-        if (!formData.phone) {
-            newErrors.phone = "Celular/WhatsApp é obrigatório";
-        } else if (formData.phone.replace(/\D/g, '').length < 10) {
-            newErrors.phone = "Telefone inválido";
-        }
-
-        // Validação do CEP
-        if (!formData.cep) {
-            newErrors.cep = "CEP é obrigatório";
-        } else if (formData.cep.replace(/\D/g, '').length !== 8) {
-            newErrors.cep = "CEP inválido";
-        }
-
-        // Validação do endereço
-        if (!formData.address.trim()) {
-            newErrors.address = "Endereço obrigatório";
-        }
-
-        // Validação do bairro
-        if (!formData.neighborhood.trim()) {
-            newErrors.neighborhood = "Bairro obrigatório";
-        }
-
-        // Validação do número
-        if (!formData.house_number.trim()) {
-            newErrors.house_number = "Número obrigatório";
-        }
-
-        // Validação da cidade
-        if (!formData.city.trim()) {
-            newErrors.city = "Cidade obrigatória";
-        }
-
-        // Validação do estado
-        if (!formData.uff_state) {
-            newErrors.uff_state = "Estado obrigatório";
-        } else if (formData.uff_state.length !== 2) {
-            newErrors.uff_state = "UF deve ter 2 caracteres";
-        }
+        fields.forEach(field => {
+            const error = validateField(field, formData[field]);
+            if (error) newErrors[field] = error;
+        });
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
+    };
+
+    const scrollToFirstError = () => {
+        setTimeout(() => {
+            const firstErrorElement = document.querySelector(`.${styles.inputError}`);
+            if (firstErrorElement) {
+                firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstErrorElement.focus();
+            }
+        }, 100);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!validateForm()) {
-            console.log('Formulário inválido:', errors);
+            scrollToFirstError();
             return;
         }
 
@@ -354,16 +215,9 @@ const BePilotAmbassador = () => {
                 created_at: new Date().toISOString(),
             };
 
-            console.log('Enviando dados:', dataToSend);
+            const { error } = await supabase.from('pre_instructor').insert([dataToSend]);
 
-            const { error } = await supabase
-                .from('pre_instructor')
-                .insert([dataToSend]);
-
-            if (error) {
-                console.error('Erro do Supabase:', error);
-                throw error;
-            }
+            if (error) throw error;
 
             setSubmitStatus('success');
             setFormData({
@@ -372,331 +226,309 @@ const BePilotAmbassador = () => {
                 city: '', uff_state: '', questions_suggestion: '', group: 0
             });
             setErrors({});
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } catch (error) {
-            console.error('Erro ao enviar formulário:', error);
+            console.error('Erro:', error);
             setSubmitStatus('error');
         } finally {
             setLoading(false);
         }
     };
 
-    // Limpa timeout quando o componente desmonta
     useEffect(() => {
-        return () => {
-            if (cepTimeout) clearTimeout(cepTimeout);
-        };
+        return () => { if (cepTimeout) clearTimeout(cepTimeout); };
     }, [cepTimeout]);
 
     return (
-        <div className={styles.container}>
+        <div className={styles.pageContainer}>
             <Header />
 
-            <section className={styles.hero}>
-                <div className={styles.heroContent}>
-                    <img src={logoHero} alt="BePilot Logo" className={styles.logoHero} />
-                    <h1>O Futuro da Instrução de Trânsito Começa com Você.</h1>
-                    <p>Torne-se um <strong>Instrutor Embaixador BePilot</strong>. Faça sua <strong>PRÉ-INSCRIÇÃO</strong> como um Instrutor BePilot e garanta benefícios exclusivos, mais destaque em sua região e ajude a moldar a plataforma que vai revolucionar o seu trabalho.</p>
-                    <a href="#cadastro" className={styles.ctaButton}>Quero ser Embaixador</a>
-                </div>
-            </section>
-
-            <section className={styles.benefits}>
-                <h2>Por que se cadastrar agora?</h2>
-                <div className={styles.cardsGrid}>
-                    <div className={styles.card}>
-
-                        <img className={styles.iconCircle} src="https://img.freepik.com/fotos-gratis/jovem-sorridente-testando-um-carro_23-2148333009.jpg" alt="" />
-
-                        <h3>Pioneirismo</h3>
-                        <p>Seja um dos primeiros a utilizar a tecnologia que conecta instrutores e alunos de forma inteligente.</p>
+            <main className={styles.mainContent}>
+                {/* Hero Section */}
+                <section className={styles.heroSection}>
+                    <div className={styles.heroContent}>
+                        <img src={logoHero} alt="BePilot Logo" className={styles.heroLogo} />
+                        <h1 className={styles.heroTitle}>O Futuro da Instrução de Trânsito</h1>
+                        <p className={styles.heroText}>
+                            Torne-se um <strong>Instrutor Embaixador BePilot</strong>. Garanta benefícios exclusivos,
+                            isenção vitalícia de taxas e destaque em sua região.
+                        </p>
+                        <a href="#cadastro" className={styles.heroButton}>Quero ser Embaixador</a>
                     </div>
-                    <div className={styles.card}>
-                        <img className={styles.iconCircle} src="https://img.freepik.com/fotos-gratis/elegante-motorista-de-taxi-em-traje_23-2149204585.jpg" alt="" />
-                        <h3>Gratuidade Vitalícia</h3>
-                        <p>Embaixadores cadastrados nesta fase terão isenção de taxas da plataforma para sempre.</p>
-                    </div>
-                    <div className={styles.card}>
-                        <img className={styles.iconCircle} src="https://img.freepik.com/fotos-gratis/homem-oferecendo-sua-mao-para-apertar_23-2148384936.jpg" alt="" />
-                        <h3>Construa Conosco</h3>
-                        <p>Sua opinião definirá as próximas funcionalidades. A plataforma será feita sob medida para suas necessidades.</p>
-                    </div>
-                    <div className={styles.card}>
-                        <img className={styles.iconCircle} src="https://img.freepik.com/fotos-gratis/pessoa-que-se-prepara-para-obter-a-carta-de-conducao_23-2150167549.jpg" alt="" />
-                        <h3>Destaque no App</h3>
-                        <p>Sua participação fará com que seu perfil tenha maior destaque em sua região, ainda contará com o selo especial de Instrutor Embaixador.</p>
-                    </div>
-                </div>
-            </section>
+                </section>
 
-            <section id="cadastro" className={styles.formSection}>
-                <div className={styles.formCard}>
-                    <div className={styles.formHeader}>
-                        <img src={iconBenefit} alt="Icon" className={styles.formIcon} />
-                        <h2>Pré-Cadastro de Instrutor</h2>
-                        <p>Preencha seus dados para garantir sua vaga de Instrutor Embaixador.</p>
-                        <p className={styles.requiredNote}></p>
+                {/* Benefits Section */}
+                <section className={styles.benefitsSection}>
+                    <h2 className={styles.sectionTitle}>Por que se cadastrar agora?</h2>
+                    <div className={styles.benefitsGrid}>
+                        <BenefitCard
+                            img="https://img.freepik.com/fotos-gratis/jovem-sorridente-testando-um-carro_23-2148333009.jpg"
+                            title="Pioneirismo"
+                            text="Seja um dos primeiros a utilizar a tecnologia que conecta instrutores e alunos de forma inteligente."
+                        />
+                        <BenefitCard
+                            img="https://img.freepik.com/fotos-gratis/elegante-motorista-de-taxi-em-traje_23-2149204585.jpg"
+                            title="Gratuidade Vitalícia"
+                            text="Embaixadores cadastrados nesta fase terão isenção total de taxas da plataforma para sempre."
+                        />
+                        <BenefitCard
+                            img="https://img.freepik.com/fotos-gratis/homem-oferecendo-sua-mao-para-apertar_23-2148384936.jpg"
+                            title="Construa Conosco"
+                            text="Sua opinião é fundamental. Ajudará a definir as próximas funcionalidades sob medida para você."
+                        />
+                        <BenefitCard
+                            img="https://img.freepik.com/fotos-gratis/pessoa-que-se-prepara-para-obter-a-carta-de-conducao_23-2150167549.jpg"
+                            title="Destaque no App"
+                            text="Ganhe o selo especial de Instrutor Embaixador e tenha prioridade de visualização em sua região."
+                        />
                     </div>
+                </section>
 
-                    {submitStatus === 'success' ? (
-                        <div className={styles.successMessage}>
-                            <h3>🎉 Cadastro Realizado!</h3>
-                            <p>Entraremos em contato em breve.</p>
-                            <br />
-                            <br />
-                            <p>Faça parte do nosso grupo do whatsapp e fique por dentro de tudo que acontece no nosso App!</p>
-                            <a href="https://chat.whatsapp.com/L9BQqgWC4j07MBrNbEd7Ll" target="_blank" rel="noopener noreferrer" className={styles.ctaButton}>Entrar no Grupo</a>
+                {/* Form Section */}
+                <section id="cadastro" className={styles.formSection}>
+                    <div className={styles.formContainer}>
+                        <div className={styles.formHeader}>
+                            <img src={iconBenefit} alt="Ícone" className={styles.formIcon} />
+                            <h2>Pré-Cadastro de Instrutor</h2>
+                            <p>Preencha seus dados para garantir sua vaga de Instrutor Embaixador.</p>
                         </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className={styles.form} noValidate>
-                            <div className={styles.row}>
-                                <div className={styles.inputGroup}>
-                                    <label>Nome Completo <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        onBlur={(e) => {
-                                            const error = validateField('name', e.target.value);
-                                            setErrors(prev => ({ ...prev, name: error }));
-                                        }}
-                                        className={errors.name ? styles.errorInput : ''}
-                                        placeholder="Digite seu nome completo"
-                                    />
-                                    {errors.name && <span className={styles.errorText}>{errors.name}</span>}
+
+                        {submitStatus === 'success' ? (
+                            <div className={styles.successState}>
+                                <div className={styles.successIcon}>🎉</div>
+                                <h3>Cadastro Realizado com Sucesso!</h3>
+                                <p>Agradecemos seu interesse. Entraremos em contato em breve.</p>
+                                <div className={styles.whatsappBox}>
+                                    <p>Não perca nenhuma novidade!<br />Entre em nosso grupo oficial dos Instrutores Embaixadores no Whatsapp:</p>
+                                    <a href="https://chat.whatsapp.com/L9BQqgWC4j07MBrNbEd7Ll" target="_blank" rel="noopener noreferrer" className={styles.whatsappButton}>
+                                        Entrar no Grupo VIP
+                                    </a>
                                 </div>
+                                <button onClick={() => setSubmitStatus(null)} className={styles.textButton}>
+                                    Enviar outro pré-cadastro
+                                </button>
                             </div>
+                        ) : (
+                            <form ref={formRef} onSubmit={handleSubmit} className={styles.formGrid} noValidate>
 
-                            <div className={styles.row}>
-                                <div className={styles.inputGroup}>
-                                    <label>Email <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        onBlur={(e) => {
-                                            const error = validateField('email', e.target.value);
-                                            setErrors(prev => ({ ...prev, email: error }));
-                                        }}
-                                        className={errors.email ? styles.errorInput : ''}
-                                        placeholder="seu@email.com"
-                                    />
-                                    {errors.email && <span className={styles.errorText}>{errors.email}</span>}
-                                </div>
-                                <div className={styles.inputGroup}>
-                                    <label>Celular / WhatsApp <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        onBlur={(e) => {
-                                            const error = validateField('phone', e.target.value);
-                                            setErrors(prev => ({ ...prev, phone: error }));
-                                        }}
-                                        className={errors.phone ? styles.errorInput : ''}
-                                        placeholder="(XX) 9XXXX-XXXX"
-                                    />
-                                    {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
-                                </div>
-                            </div>
+                                {/* Grupo: Dados Pessoais */}
+                                <div className={styles.formGroupTitle}>Dados Pessoais</div>
 
-                            <div className={styles.row}>
-                                <div className={styles.inputGroup}>
-                                    <label>CPF <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
-                                        name="cpf"
-                                        value={formData.cpf}
-                                        onChange={handleChange}
-                                        onBlur={(e) => {
-                                            const error = validateField('cpf', e.target.value);
-                                            setErrors(prev => ({ ...prev, cpf: error }));
-                                        }}
-                                        maxLength="14"
-                                        placeholder="000.000.000-00"
-                                        className={errors.cpf ? styles.errorInput : ''}
-                                    />
-                                    {errors.cpf && <span className={styles.errorText}>{errors.cpf}</span>}
-                                </div>
-                                <div className={styles.inputGroup}>
-                                    <label>Data de Nascimento <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="date"
-                                        name="birth_day"
-                                        value={formData.birth_day}
-                                        onChange={handleChange}
-                                        onBlur={(e) => {
-                                            const error = validateField('birth_day', e.target.value);
-                                            setErrors(prev => ({ ...prev, birth_day: error }));
-                                        }}
-                                        className={errors.birth_day ? styles.errorInput : ''}
-                                        max={new Date().toISOString().split('T')[0]}
-                                    />
-                                    {errors.birth_day && <span className={styles.errorText}>{errors.birth_day}</span>}
-                                </div>
-                            </div>
+                                <InputField
+                                    label="Nome Completo"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    error={errors.name}
+                                    placeholder="Digite seu nome completo"
+                                    required
+                                    className={styles.spanFull}
+                                />
 
-                            <div className={styles.divider}>Endereço</div>
+                                <InputField
+                                    label="Email"
+                                    name="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    error={errors.email}
+                                    placeholder="seu@email.com"
+                                    required
+                                />
 
-                            <div className={styles.row}>
-                                <div className={`${styles.inputGroup} ${styles.small}`}>
-                                    <label>CEP <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
+                                <InputField
+                                    label="Celular / WhatsApp"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    error={errors.phone}
+                                    placeholder="(XX) 9XXXX-XXXX"
+                                    required
+                                />
+
+                                <InputField
+                                    label="CPF"
+                                    name="cpf"
+                                    value={formData.cpf}
+                                    onChange={handleChange}
+                                    error={errors.cpf}
+                                    placeholder="000.000.000-00"
+                                    maxLength={14}
+                                    required
+                                />
+
+                                <InputField
+                                    label="Data de Nascimento"
+                                    name="birth_day"
+                                    type="date"
+                                    value={formData.birth_day}
+                                    onChange={handleChange}
+                                    error={errors.birth_day}
+                                    max={new Date().toISOString().split('T')[0]}
+                                    required
+                                />
+
+                                {/* Grupo: Endereço */}
+                                <div className={styles.formGroupTitle}>Localização</div>
+
+                                <div className={styles.cepWrapper}>
+                                    <InputField
+                                        label="CEP"
                                         name="cep"
                                         value={formData.cep}
                                         onChange={handleChange}
                                         onBlur={handleBlurCEP}
-                                        maxLength="9"
+                                        error={errors.cep}
                                         placeholder="00000-000"
-                                        className={errors.cep ? styles.errorInput : ''}
+                                        maxLength={9}
+                                        required
                                         disabled={loading}
                                     />
-                                    {errors.cep && <span className={styles.errorText}>{errors.cep}</span>}
-                                    {loading && <span className={styles.loadingText}>Buscando CEP...</span>}
+                                    {loading && <span className={styles.loadingIndicator}>Buscando...</span>}
                                 </div>
-                            </div>
 
-                            <div className={styles.row}>
-                                <div className={`${styles.inputGroup} ${styles.large}`}>
-                                    <label>Endereço <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
-                                        name="address"
-                                        value={formData.address}
-                                        readOnly
-                                        className={`${errors.address ? styles.errorInput : ''} ${styles.readOnlyField}`}
-                                        placeholder="Preenchido automaticamente pelo CEP"
-                                    />
-                                    {errors.address && <span className={styles.errorText}>{errors.address}</span>}
-                                </div>
-                                <div className={`${styles.inputGroup} ${styles.small}`}>
-                                    <label>Número <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
-                                        name="house_number"
-                                        value={formData.house_number}
-                                        onChange={handleChange}
-                                        onBlur={(e) => {
-                                            const error = validateField('house_number', e.target.value);
-                                            setErrors(prev => ({ ...prev, house_number: error }));
-                                        }}
-                                        className={errors.house_number ? styles.errorInput : ''}
-                                        placeholder="123"
-                                    />
-                                    {errors.house_number && <span className={styles.errorText}>{errors.house_number}</span>}
-                                </div>
-                            </div>
+                                <div className={styles.emptySpace}></div> {/* Spacer for grid alignment */}
 
-                            <div className={styles.row}>
-                                <div className={styles.inputGroup}>
-                                    <label>Bairro <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
-                                        name="neighborhood"
-                                        value={formData.neighborhood}
-                                        readOnly
-                                        className={`${errors.neighborhood ? styles.errorInput : ''} ${styles.readOnlyField}`}
-                                        placeholder="Preenchido automaticamente pelo CEP"
-                                    />
-                                    {errors.neighborhood && <span className={styles.errorText}>{errors.neighborhood}</span>}
-                                </div>
-                            </div>
+                                <InputField
+                                    label="Endereço"
+                                    name="address"
+                                    value={formData.address}
+                                    readOnly
+                                    error={errors.address}
+                                    className={`${styles.spanFull} ${styles.readOnly}`}
+                                    placeholder="Preenchimento automático"
+                                />
 
-                            <div className={styles.row}>
-                                <div className={`${styles.inputGroup} ${styles.large}`}>
-                                    <label>Cidade <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
+                                <InputField
+                                    label="Número"
+                                    name="house_number"
+                                    value={formData.house_number}
+                                    onChange={handleChange}
+                                    error={errors.house_number}
+                                    placeholder="123"
+                                    required
+                                />
+
+                                <InputField
+                                    label="Complemento (Opcional)"
+                                    name="complement"
+                                    value={formData.complement}
+                                    onChange={handleChange}
+                                    placeholder="Apto, Bloco, etc."
+                                />
+
+                                <InputField
+                                    label="Bairro"
+                                    name="neighborhood"
+                                    value={formData.neighborhood}
+                                    readOnly
+                                    error={errors.neighborhood}
+                                    className={styles.readOnly}
+                                />
+
+                                <div className={styles.cityStateGrid}>
+                                    <InputField
+                                        label="Cidade"
                                         name="city"
                                         value={formData.city}
                                         readOnly
-                                        className={`${errors.city ? styles.errorInput : ''} ${styles.readOnlyField}`}
-                                        placeholder="Preenchido automaticamente pelo CEP"
+                                        error={errors.city}
+                                        className={styles.readOnly}
                                     />
-                                    {errors.city && <span className={styles.errorText}>{errors.city}</span>}
-                                </div>
-                                <div className={`${styles.inputGroup} ${styles.xsmall}`}>
-                                    <label>UF <span className={styles.required}>*</span></label>
-                                    <input
-                                        type="text"
+                                    <InputField
+                                        label="UF"
                                         name="uff_state"
                                         value={formData.uff_state}
                                         readOnly
-                                        maxLength="2"
-                                        className={`${errors.uff_state ? styles.errorInput : ''} ${styles.readOnlyField}`}
-                                        placeholder="Preenchido pelo CEP"
-                                    />
-                                    {errors.uff_state && <span className={styles.errorText}>{errors.uff_state}</span>}
-                                </div>
-                            </div>
-
-                            <div className={styles.row}>
-                                <div className={styles.inputGroup}>
-                                    <label>Complemento (opcional)</label>
-                                    <input
-                                        type="text"
-                                        name="complement"
-                                        value={formData.complement}
-                                        onChange={handleChange}
-                                        placeholder="Apto, Bloco, etc."
+                                        error={errors.uff_state}
+                                        className={styles.readOnly}
+                                        maxLength={2}
                                     />
                                 </div>
-                            </div>
 
-                            <div className={styles.row}>
-                                <div className={styles.inputGroup}>
-                                    <label>Dúvida ou sugestão? *</label>
-                                    <input
+                                {/* Grupo: Finalização */}
+                                <div className={styles.formGroupTitle}>Finalização</div>
+
+                                <div className={styles.spanFull}>
+                                    <label className={styles.label}>Dúvidas ou Sugestões (Opcional)</label>
+                                    <br />
+                                    <br />
+                                    <InputField
                                         type="text"
                                         name="questions_suggestion"
                                         value={formData.questions_suggestion}
                                         onChange={handleChange}
-                                        placeholder="Ex. Como vai funcionar? Gostaria de sugerir..."
-                                        required
+                                        placeholder="Gostaria de sugerir..."
+                                        className={styles.input}
                                     />
                                 </div>
-                            </div>
 
-                            <div className={styles.row}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', width: '100%', gap: '10px' }}>
-                                    <input
-                                        type="checkbox"
-                                        name="group"
-                                        checked={formData.group === 1} // Verifica se é igual a 1
-                                        onChange={handleChange} // Handler adicionado
-                                    />
-                                    <label className={styles.inputGroup}>Deseja participar do grupo do whatsapp  para novas atualizações? </label>
-
+                                <div className={`${styles.spanFull} ${styles.checkboxWrapper}`}>
+                                    <label className={styles.checkboxLabel}>
+                                        <input
+                                            type="checkbox"
+                                            name="group"
+                                            checked={formData.group === 1}
+                                            onChange={handleChange}
+                                            className={styles.spanFull}
+                                        />
+                                        <span className={styles.checkboxText}>
+                                            Deseja entrar no grupo do WhatsApp para receber atualizações exclusivas?
+                                        </span>
+                                    </label>
                                 </div>
-                            </div>
 
-                            {submitStatus === 'error' && (
-                                <div className={styles.errorMessage}>
-                                    <p>Erro ao enviar. Verifique seus dados ou tente mais tarde.</p>
+                                {submitStatus === 'error' && (
+                                    <div className={`${styles.spanFull} ${styles.errorMessage}`}>
+                                        Ocorreu um erro ao enviar. Verifique os campos em vermelho e tente novamente.
+                                    </div>
+                                )}
+
+                                <div className={styles.spanFull}>
+                                    <button type="submit" className={styles.submitButton} disabled={loading}>
+                                        {loading ? 'Processando...' : 'Confirmar Pré-Cadastro'}
+                                    </button>
                                 </div>
-                            )}
-
-
-                            <button
-                                type="submit"
-                                className={styles.submitButton}
-                                disabled={loading}
-                            >
-                                {loading ? 'Enviando...' : 'Finalizar Pré-Cadastro'}
-                            </button>
-                        </form>
-                    )}
-                </div>
-            </section>
+                            </form>
+                        )}
+                    </div>
+                </section>
+            </main>
 
             <Footer />
-
         </div>
     );
 };
+
+// Sub-componentes para limpar o JSX principal
+const InputField = ({ label, name, value, onChange, error, className = '', readOnly, type = "text", ...props }) => (
+    <div className={`${styles.inputGroup} ${className}`}>
+        <label htmlFor={name} className={styles.label}>
+            {label} {props.required && <span className={styles.requiredMark}>*</span>}
+        </label>
+        <input
+            id={name}
+            type={type}
+            name={name}
+            value={value}
+            onChange={onChange}
+            className={`${styles.input} ${error ? styles.inputError : ''} ${readOnly ? styles.inputReadOnly : ''}`}
+            readOnly={readOnly}
+            {...props}
+        />
+        {error && <span className={styles.errorText}>{error}</span>}
+    </div>
+);
+
+const BenefitCard = ({ img, title, text }) => (
+    <div className={styles.benefitCard}>
+        <div className={styles.imageContainer}>
+            <img src={img} alt={title} className={styles.cardImage} />
+        </div>
+        <h3>{title}</h3>
+        <p>{text}</p>
+    </div>
+);
 
 export default BePilotAmbassador;

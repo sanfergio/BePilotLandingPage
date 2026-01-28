@@ -5,6 +5,7 @@ import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound/NotFound';
 import BePilotAmbassador from './pages/FormInstructor/FormInstructor.jsx';
 import BePilotStudent from './pages/FormStudent/FormStudent.jsx';
+import BePilotCFC from './pages/FormCFC/FormCFC.jsx';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
 
         <Route path="/seja-instrutor" element={<BePilotAmbassador />} />
         <Route path="/seja-aluno" element={<BePilotStudent />} />
+        <Route path="/seja-cfc" element={<BePilotCFC />} />
 
       </Routes>
     </div>
