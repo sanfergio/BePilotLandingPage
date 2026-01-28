@@ -329,10 +329,10 @@ const BePilotStudentBeta = () => {
                 <div className={styles.heroContent}>
                     <div className={styles.heroLeft}>
                         <h1 className={styles.heroTitle}>
-                            Programa Beta <span className={styles.highlight}>BePilot</span>
+                            Programa Beta <span className={styles.highlight}>Aluno BePilot</span>
                         </h1>
                         <p className={styles.heroSubtitle}>
-                            Participe do desenvolvimento da próxima geração de condutores.
+                            Participe do desenvolvimento da próxima geração dos novos condutores.
                             Garanta acesso prioritário, influencie funcionalidades e receba suporte exclusivo.
                         </p>
                         <div className={styles.heroFeatures}>
@@ -373,7 +373,7 @@ const BePilotStudentBeta = () => {
                     </div>
                     <div className={styles.statItem}>
                         <div className={styles.statNumber}>24h</div>
-                        <div className={styles.statLabel}>SLA de Suporte</div>
+                        <div className={styles.statLabel}>Suporte Premium</div>
                     </div>
                 </div>
             </section>

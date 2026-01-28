@@ -323,7 +323,7 @@ const BePilotCFC = () => {
                                 </div>
                                 <div className={styles.separator}></div>
                                 <div className={styles.statItem}>
-                                    <strong>24/7</strong>
+                                    <strong>24/5</strong>
                                     <span>Suporte</span>
                                 </div>
                             </div>

@@ -223,9 +223,9 @@
 .stepsIndicator {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-    gap: 1rem;
+    justify-content: space-around;
+    margin-bottom: 10px;
+    
 }
 
 .step {
@@ -662,6 +662,28 @@
 
 /* --- Responsividade --- */
 @media (max-width: 1150px) {
+
+    .formContainer {
+        box-shadow: none;
+        border: none;
+        width: 95%;
+    }
+
+    .formSection{
+        display: flex;
+        width: 100%;
+        padding: 0;
+    }
+
+    .stepLine {
+        display: none;
+    }
+
+    .stepsIndicator {
+        gap: 1.5rem;
+        margin-bottom: 10px;
+    }
+
     .heroContent {
         grid-template-columns: 1fr;
         gap: 2rem;
