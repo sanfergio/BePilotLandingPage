@@ -130,11 +130,13 @@
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    
+
     /* Fundo preto semitransparente apenas atrás do texto */
     background-color: rgba(0, 0, 0, 0.7);
-    padding: 0.5rem 1rem; /* Espaço para o texto respirar */
-    display: inline-block; /* Faz o fundo acompanhar o tamanho do texto */
+    padding: 0.5rem 1rem;
+    /* Espaço para o texto respirar */
+    display: inline-block;
+    /* Faz o fundo acompanhar o tamanho do texto */
     border-radius: 8px;
 }
 
@@ -563,7 +565,7 @@
         text-align: left;
     }
 
-    .sectionTitle{
+    .sectionTitle {
         font-size: 160%;
     }
 

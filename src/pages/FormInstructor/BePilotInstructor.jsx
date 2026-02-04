@@ -33,7 +33,8 @@ const BePilotInstructor = () => {
         city: '',
         uf_state: '',
         questions_suggestion: '',
-        group: 1 // 1 para Instrutores
+        group: 1, // 1 para Instrutores
+        cupon_used: ''
     });
 
     const [loading, setLoading] = useState(false);
@@ -55,19 +56,34 @@ const BePilotInstructor = () => {
                 else if (!emailRegex.test(value)) error = 'E-mail inválido';
                 break;
             case 'cpf':
-                if (!validateCPF(value)) error = 'CPF inválido';
+                if (!value) error = "CPF é obrigatório";
+                else if (value && value.length !== 14) error = "CPF inválido";
+                else if (!value.trim()) error = "CPF obrigatório";
+                else if (!validateCPF(value)) error = "CPF inválido";
                 break;
             case 'phone':
                 if (value.length < 14) error = 'Telefone inválido';
                 break;
             case 'cep':
-                if (value.length < 9) error = 'CEP incompleto';
+                const cepCleanVal = value.replace(/\D/g, '');
+                if (!value) error = "CEP é obrigatório";
+                else if (cepCleanVal.length !== 8) error = "CEP incompleto";
                 break;
             case 'house_number':
                 if (!value.trim()) error = 'Número é obrigatório';
                 break;
             case 'birth_day':
-                if (!value) error = 'Data de nascimento é obrigatória';
+                if (!value) error = "Data de nascimento obrigatória";
+                else {
+                    const birthDate = new Date(value);
+                    const today = new Date();
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDiff = today.getMonth() - birthDate.getMonth();
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
+
+                    if (age < 18) error = "É necessário ter pelo menos 18 anos";
+                    else if (age > 100) error = "Data de nascimento inválida";
+                }
                 break;
             default:
                 break;
@@ -81,17 +97,19 @@ const BePilotInstructor = () => {
         setErrors(prev => ({ ...prev, [name]: error }));
     };
 
+    const formatPhone = (value) => {
+        const numbers = value.replace(/\D/g, '');
+        if (numbers.length <= 10) return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         let formattedValue = value;
 
         if (name === 'cpf') formattedValue = formatCPF(value);
         if (name === 'cep') formattedValue = formatCEP(value);
-        if (name === 'phone') {
-            formattedValue = value.replace(/\D/g, '')
-                .replace(/^(\d{2})(\d)/g, '($1) $2')
-                .replace(/(\d)(\d{4})$/, '$1-$2');
-        }
+        if (name === 'phone') formattedValue = formatPhone(value);
 
         setFormData(prev => ({ ...prev, [name]: formattedValue }));
 
@@ -151,7 +169,7 @@ const BePilotInstructor = () => {
         try {
             // Enviando para a tabela 'Instructor_Leads' (ou Ambassador_Leads se for tabela unificada)
             const { error } = await supabase
-                .from('Instructor_Leads')
+                .from('pre_instructor')
                 .insert([formData]);
 
             if (error) throw error;
@@ -172,7 +190,7 @@ const BePilotInstructor = () => {
         setFormData({
             name: '', email: '', cpf: '', birth_day: '', phone: '',
             cep: '', address: '', neighborhood: '', house_number: '',
-            complement: '', city: '', uf_state: '', questions_suggestion: '', group: 1
+            complement: '', city: '', uf_state: '', questions_suggestion: '', group: 1, cupon_used: ''
         });
         setSubmitStatus(null);
     };
@@ -186,8 +204,7 @@ const BePilotInstructor = () => {
                 <div className={styles.contentColumn}>
                     <section className={styles.heroSection}>
                         <h1 className={styles.heroTitle}>
-                            Ensine e Decole com a <br />
-                            <span>BePilot</span>
+                            Ensine e Cresça com a <span> BePilot</span>
                         </h1>
                         <p className={styles.heroSubtitle}>
                             Digitalize sua carreira de instrução. Gerencie alunos, receba pagamentos e construa sua reputação em uma única plataforma.
@@ -201,36 +218,50 @@ const BePilotInstructor = () => {
                         <div className={styles.roadmapItem}>
                             <div className={styles.roadmapHeader}>
                                 <div className={styles.tagStart}>Comece Agora</div>
-                                <h3>Instrutor Parceiro</h3>
+                                <h3>Seja um Instrutor Parceiro</h3>
                             </div>
                             <div className={styles.roadmapContent}>
                                 <ul>
                                     <li><IconCheck /> Perfil profissional verificado na plataforma</li>
-                                    <li><IconCheck /> Ferramentas de agendamento de voos e aulas</li>
-                                    <li><IconCheck /> Gestão financeira e recebimento automático</li>
+                                    <li><IconCheck /> Ferramentas de agendamento de aulas</li>
+                                    <li><IconCheck /> Gestão financeira completa</li>
                                     <li><IconCheck /> Acesso à base de alunos da sua região</li>
                                 </ul>
                             </div>
                         </div>
 
-                        {/* Nível 2: Desbloqueável */}
-                        <div className={`${styles.roadmapItem} ${styles.locked}`}>
+                        {/* Nível 1: Imediato */}
+                        <div className={styles.roadmapItem}>
                             <div className={styles.roadmapHeader}>
-                                <div className={styles.tagUnlock}>Metas & Gamificação</div>
-                                <h3>Top Instructor</h3>
+                                <div className={styles.tagStart}>Faça Parte</div>
+                                <h3>Plataforma amigável e intuitiva</h3>
                             </div>
                             <div className={styles.roadmapContent}>
-                                <p style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#666' }}>
-                                    Alcance as metas de horas/aula e desbloqueie:
-                                </p>
                                 <ul>
-                                    <li><IconLock /> Selo de destaque nas buscas ("Top Rated")</li>
-                                    <li><IconLock /> Prioridade no recebimento de novos leads</li>
-                                    <li><IconLock /> Taxas reduzidas na plataforma</li>
-                                    <li><IconLock /> Acesso a eventos exclusivos de networking</li>
+                                    <li><IconCheck /> Tutorial interativo para ingressar com tudo na plataforma!  </li>
+                                    <li><IconCheck /> Mensalidade flexiva </li>
+                                    <li><IconCheck /> Painel completo para administrar a sua carreira</li>
+                                    <li><IconCheck /> Desbloqueie novas funcionalidades conforme sua evolução</li>
                                 </ul>
                             </div>
                         </div>
+
+                        {/* Nível 1: Imediato */}
+                        <div className={styles.roadmapItem}>
+                            <div className={styles.roadmapHeader}>
+                                <div className={styles.tagStart}>Cresça com a BeP</div>
+                                <h3>Economize tempo, distância e dinheiro</h3>
+                            </div>
+                            <div className={styles.roadmapContent}>
+                                <ul>
+                                    <li><IconCheck /> Trabalhe dentro da sua região residêncial </li>
+                                    <li><IconCheck /> Feche com alunos de forma totalmente digital </li>
+                                    <li><IconCheck /> Taxas abaixo do padrão do mercado </li>
+                                    <li><IconCheck /> Faça seus horários</li>
+                                </ul>
+                            </div>
+                        </div>
+
 
                     </div>
                 </div>
@@ -249,9 +280,11 @@ const BePilotInstructor = () => {
                                 <h4>Próximos Passos</h4>
                                 <p style={{ fontSize: '0.9rem', margin: '0.5rem 0' }}>
                                     Entraremos em contato via WhatsApp para validar suas credenciais (CMA/ANAC) e ativar seu perfil.
+                                    <br /><br />
+                                    Enquanto isso, entre no nosso grupo exclusivo de instrutores para ficar por dentro das novidades!
                                 </p>
-                                <a href="#" className={styles.whatsappButton} onClick={(e) => e.preventDefault()}>
-                                    Aguarde nosso contato
+                                <a href="https://chat.whatsapp.com/L9BQqgWC4j07MBrNbEd7Ll" target='_blank' className={styles.whatsappButton} >
+                                    Entrar no Grupo do WhatsApp
                                 </a>
                             </div>
 
@@ -281,7 +314,7 @@ const BePilotInstructor = () => {
                                 </div>
 
                                 <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
-                                    <label>E-mail Profissional</label>
+                                    <label>E-mail</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -387,6 +420,16 @@ const BePilotInstructor = () => {
                                         type="text"
                                         name="complement"
                                         value={formData.complement}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+
+                                <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
+                                    <label>Cupom Indicação (Opcional)</label>
+                                    <input
+                                        type="text"
+                                        name="cupon_used"
+                                        value={formData.cupon_used}
                                         onChange={handleChange}
                                     />
                                 </div>

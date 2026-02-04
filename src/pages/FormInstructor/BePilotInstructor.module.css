@@ -55,6 +55,7 @@
     font-weight: 800;
     color: var(--color-blue-dark);
     line-height: 1.2;
+    text-align: left;
     margin-bottom: 1rem;
 }
 
@@ -338,10 +339,12 @@
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1050px) {
     .mainWrapper {
         grid-template-columns: 1fr;
         padding: 1rem;
+        max-width: 95%;
+        display: block;
     }
 
     .formCard {
