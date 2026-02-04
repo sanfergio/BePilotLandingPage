@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './FormInstructor.module.css';
+import styles from './BePilotAmbassador.module.css';
 import supabase from '../../components/Keys/Keys.jsx';
 import { validateCPF, formatCPF, formatCEP } from '../../utils/validators.js';
 import Header from '../../components/Header/Header.jsx';
@@ -211,7 +211,7 @@ const BePilotAmbassador = () => {
                 created_at: new Date().toISOString(),
             };
 
-            const { error } = await supabase.from('pre_instructor').insert([dataToSend]);
+            const { error } = await supabase.from('pre_ambassador').insert([dataToSend]);
 
             if (error) throw error;
 
