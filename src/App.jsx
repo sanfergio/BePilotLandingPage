@@ -10,6 +10,7 @@ import Plans from './pages/Plans/Plans.jsx';
 import About from './pages/About/About.jsx';
 import HowWork from './pages/HowWork/HowWork.jsx';
 import BePilotInstructor from './pages/FormInstructor/BePilotInstructor.jsx';
+import Contact from './pages/Contact/Contact.jsx';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/planos" element={<Plans />} />
         <Route path="/sobre" element={<About />} />
         <Route path="/como-funciona" element={<HowWork />} />
+        <Route path="/contato" element={<Contact />} />
 
       </Routes>
     </div>
